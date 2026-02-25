@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
-  "name": "Lomen AI",
+  "name": "Cesto",
   "colors": {
-    "primary": "#00e6c5",
-    "light": "#05B9F2",
-    "dark": "#00e6c5"
+    "primary": "#4ADE80",
+    "light": "#4ADE80",
+    "dark": "#4ADE80"
   },
   "favicon": "/favicon.svg",
   "seo": {
@@ -23,27 +23,25 @@
         "icon": "book-open",
         "groups": [
           {
-            "group": "Lomen App",
-            "pages": ["lomen-app/getting-started", "lomen-app/faq"]
+            "group": "Cesto",
+            "pages": [
+              "cesto/what-is-cesto",
+              "cesto/how-it-works"
+            ]
           },
           {
-            "group": "Core Concepts",
+            "group": "Using Cesto",
             "pages": [
-              "lomen-app/core-concepts/baskets",
-              "lomen-app/ai/discovery",
-              "lomen-app/strategies/overview"
+              "cesto/my-portfolio",
+              "cesto/rebalancing"
             ]
           },
           {
             "group": "Resources",
             "pages": [
-              "lomen-app/security/self-custody",
-              "lomen-app/rebalancing"
+              "cesto/security",
+              "cesto/faq"
             ]
-          },
-          {
-            "group": "Dev Tooling",
-            "pages": ["dev-tooling/introduction"]
           }
         ]
       }
@@ -51,34 +49,25 @@
     "global": {
       "anchors": [
         {
-          "anchor": "X",
-          "href": "https://x.com/getlomen",
-          "icon": "x"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://getlomen.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://cesto.co",
+          "icon": "globe"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/lomen-light.svg",
-    "dark": "/logo/lomen-dark.svg"
+    "light": "/logo/cesto-light.png",
+    "dark": "/logo/cesto-dark.png"
   },
   "navbar": {
     "primary": {
       "type": "button",
-      "label": "Try Lomen App",
-      "href": "https://app.getlomen.com"
+      "label": "Open App",
+      "href": "https://app.cesto.co"
     }
   },
   "footer": {
-    "socials": {
-      "x": "https://x.com/getlomen",
-      "github": "https://github.com/lomen-org",
-      "telegram": "https://t.me/lomen_ai"
-    }
+    "socials": {}
   }
 }
