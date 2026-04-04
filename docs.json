@@ -39,7 +39,7 @@
           {
             "group": "Skills",
             "pages": [
-              "dev-tooling/cesto-toolkit-skill"
+              "cesto/skill"
             ]
           },
           {
