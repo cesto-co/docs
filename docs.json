@@ -37,6 +37,12 @@
             ]
           },
           {
+            "group": "Skills",
+            "pages": [
+              "dev-tooling/cesto-toolkit-skill"
+            ]
+          },
+          {
             "group": "Resources",
             "pages": [
               "cesto/security",
