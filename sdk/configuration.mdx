@@ -1,0 +1,56 @@
+---
+title: "Configuration"
+icon: "sliders"
+description: "Client options and per-request overrides."
+---
+
+## Client options
+
+```ts
+new Cesto({
+  apiKey: 'cesto_sk_…',       // required (or CESTO_API_KEY env)
+  environment: 'PRODUCTION',  // 'PRODUCTION' | 'BETA' — default 'PRODUCTION'
+  timeout: 60_000,            // per-request timeout in ms — default 60s
+  maxRetries: 2,              // automatic retries on transient errors — default 2
+  fetch: customFetch,         // optional custom fetch implementation
+});
+```
+
+<ParamField path="apiKey" type="string">
+  Secret API key. Falls back to `process.env.CESTO_API_KEY`. Required.
+</ParamField>
+<ParamField path="environment" type="'PRODUCTION' | 'BETA'" default="PRODUCTION">
+  Which deployed backend to target (production builds only — ignored locally). See
+  [Authentication](/sdk/authentication#environments).
+</ParamField>
+<ParamField path="timeout" type="number" default="60000">
+  Per-request timeout in milliseconds.
+</ParamField>
+<ParamField path="maxRetries" type="number" default="2">
+  Max automatic retries on transient failures (429, 5xx, network errors, timeouts).
+</ParamField>
+<ParamField path="fetch" type="typeof fetch">
+  Custom fetch implementation (e.g. `undici`). Defaults to the global `fetch`.
+</ParamField>
+
+## Per-request options
+
+Every method accepts an options object as its last argument to override transport behavior
+for a single call:
+
+```ts
+await cesto.products.list(
+  { category: 'defi' },
+  { timeout: 5_000, maxRetries: 0, signal: controller.signal },
+);
+```
+
+<ParamField path="timeout" type="number">
+  Override the client timeout for this request.
+</ParamField>
+<ParamField path="maxRetries" type="number">
+  Override retries for this request (e.g. `0` to disable).
+</ParamField>
+<ParamField path="signal" type="AbortSignal">
+  Cancel the request; composed with the internal timeout.
+</ParamField>

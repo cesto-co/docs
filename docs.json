@@ -50,6 +50,23 @@
             ]
           }
         ]
+      },
+      {
+        "anchor": "Developers",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Cesto SDK",
+            "pages": [
+              "sdk/overview",
+              "sdk/authentication",
+              "sdk/configuration",
+              "sdk/products",
+              "sdk/positions",
+              "sdk/errors"
+            ]
+          }
+        ]
       }
     ],
     "global": {
@@ -67,6 +84,13 @@
     "dark": "/logo/cesto-dark.png"
   },
   "navbar": {
+    "links": [
+      {
+        "label": "SDK",
+        "icon": "code",
+        "href": "https://docs.cesto.co/sdk/overview"
+      }
+    ],
     "primary": {
       "type": "button",
       "label": "Open App",

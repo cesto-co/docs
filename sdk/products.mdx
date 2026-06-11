@@ -1,0 +1,75 @@
+---
+title: "Products"
+icon: "basket-shopping"
+description: "List and fetch Cesto baskets."
+---
+
+`cesto.products` reads baskets (products). Both methods are read-only.
+
+## List products
+
+```ts
+const products = await cesto.products.list();
+
+// filter by category
+const defi = await cesto.products.list({ category: 'defi' });
+```
+
+### Include backtested performance
+
+Set `includeBacktest` to merge backtested performance onto each item (one extra request).
+If that data can't be fetched, `backtest` comes back `null` rather than failing the call.
+
+```ts
+const products = await cesto.products.list({ includeBacktest: true });
+products[0].backtest; // performance metrics, or null
+```
+
+<ParamField path="category" type="string">
+  Optional category filter.
+</ParamField>
+<ParamField path="includeBacktest" type="boolean" default="false">
+  Also fetch and attach backtested performance per product.
+</ParamField>
+
+## Get a product
+
+Fetch a single basket by its slug.
+
+```ts
+const product = await cesto.products.get('my-basket-slug');
+product.id;          // product id
+product.versionId;   // current version id
+product.definition;  // the basket's workflow definition
+```
+
+### Include the backtested chart
+
+```ts
+const detailed = await cesto.products.get('my-basket-slug', {
+  includeBacktestChart: true,
+  chartTimeRange: '1y', // '7d' | '1m' | '3m' | '6m' | '1y' | 'all' — default '1y'
+});
+detailed.backtestChart; // chart data, or null on failure
+```
+
+The chart is a union — a portfolio value chart or a prediction-market chart. Discriminate it
+with the shipped type guard:
+
+```ts
+import { isPredictionMarketChart } from '@cesto/sdk';
+
+const chart = detailed.backtestChart;
+if (chart && isPredictionMarketChart(chart)) {
+  chart.markets; // prediction markets
+} else if (chart) {
+  chart.timeSeries; // portfolio value over time
+}
+```
+
+<ParamField path="includeBacktestChart" type="boolean" default="false">
+  Also fetch and attach the backtested chart.
+</ParamField>
+<ParamField path="chartTimeRange" type="'7d' | '1m' | '3m' | '6m' | '1y' | 'all'" default="1y">
+  Chart window. Full metrics (CAGR, Sharpe, etc.) are only computed for `1y`.
+</ParamField>

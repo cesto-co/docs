@@ -1,0 +1,31 @@
+---
+title: "Positions"
+icon: "wallet"
+description: "Look up positions by external Solana wallet."
+---
+
+`cesto.positions.list` returns a user's open and closing positions, resolved from their
+**external Solana wallet address** (Phantom, Solflare, etc.) — no end-user login required.
+
+```ts
+const { positions, pendingClosePositions } = await cesto.positions.list({
+  wallet: 'EXTERNAL_SOLANA_ADDRESS',
+});
+```
+
+<ParamField path="wallet" type="string" required>
+  External Solana wallet address to look up.
+</ParamField>
+
+<ResponseField name="positions" type="Position[]">
+  Live open / partially-open positions.
+</ResponseField>
+<ResponseField name="pendingClosePositions" type="Position[]">
+  Positions with a close currently in progress.
+</ResponseField>
+
+<Note>
+  A wallet with no Cesto account returns an empty result
+  (`{ positions: [], pendingClosePositions: [] }`) — it is **not** an error. The `wallet`
+  argument is required; an empty value throws before any request is made.
+</Note>

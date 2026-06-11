@@ -1,0 +1,67 @@
+---
+title: "Authentication"
+icon: "key"
+description: "API keys and environments for the Cesto SDK."
+---
+
+The SDK authenticates with a **secret API key**. Keys look like `cesto_sk_…` and are sent
+automatically with every request — you never set headers yourself.
+
+## Getting a key
+
+<Note>
+  API keys are issued by the Cesto team — there's no self-serve portal yet.
+
+  **Contact us to request a key:** reach out on our
+  [community](https://t.me/lomen_ai) or through your Cesto contact, and let us know which
+  environment (Production or Beta) you need.
+</Note>
+
+Keys are **environment-specific**: a Production key only works against the Production backend,
+and a Beta key only against Beta. Request the key for the environment you're integrating with.
+
+## Providing the key
+
+Pass it explicitly, or set the `CESTO_API_KEY` environment variable and omit it:
+
+<CodeGroup>
+```ts Explicit
+const cesto = new Cesto({ apiKey: 'cesto_sk_…' });
+```
+
+```ts From env
+// reads process.env.CESTO_API_KEY
+const cesto = new Cesto();
+```
+</CodeGroup>
+
+If no key is found, the constructor throws.
+
+## Environments
+
+Select the backend with the `environment` option — you choose an environment, not a URL.
+
+| `environment` | Backend |
+| --- | --- |
+| `PRODUCTION` *(default)* | `https://backend.cesto.co` |
+| `BETA` | `https://dev.backend.cesto.co` |
+
+```ts
+const cesto = new Cesto({
+  apiKey: process.env.CESTO_API_KEY,
+  environment: 'BETA',
+});
+```
+
+<Note>
+  Outside production (`NODE_ENV` ≠ `production`), the SDK targets a local API at
+  `http://localhost:3000` for development and the `environment` option is ignored.
+</Note>
+
+## Keep your key safe
+
+<Warning>
+  Treat the key like a password — keep it server-side, store it in a secret manager or
+  environment variable, and never commit it to source control. To rotate or revoke a key,
+  contact the Cesto team.
+</Warning>

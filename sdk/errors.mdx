@@ -1,0 +1,63 @@
+---
+title: "Errors & Retries"
+icon: "triangle-exclamation"
+description: "Typed errors, automatic retries, and timeouts."
+---
+
+## Error hierarchy
+
+Everything the SDK throws extends `CestoError`. Server responses become typed `APIError`
+subclasses; transport problems become connection errors. All classes are exposed on the
+`Cesto` client for `instanceof` checks.
+
+```ts
+import { Cesto } from '@cesto/sdk';
+
+try {
+  await cesto.products.get('missing-slug');
+} catch (err) {
+  if (err instanceof Cesto.NotFoundError) {
+    // 404
+  } else if (err instanceof Cesto.AuthenticationError) {
+    // 401 — invalid / missing / revoked key
+  } else if (err instanceof Cesto.RateLimitError) {
+    // 429 — err.retryAfter (ms)
+  } else if (err instanceof Cesto.APIConnectionError) {
+    // network failure or timeout
+  } else {
+    throw err;
+  }
+}
+```
+
+| Class | When |
+| --- | --- |
+| `BadRequestError` | 400 |
+| `AuthenticationError` | 401 — invalid / missing / revoked key |
+| `PermissionDeniedError` | 403 |
+| `NotFoundError` | 404 |
+| `RateLimitError` | 429 — carries `retryAfter` (ms) |
+| `InternalServerError` | 5xx |
+| `APIConnectionError` | network failure |
+| `APIConnectionTimeoutError` | request exceeded `timeout` |
+| `APIUserAbortError` | your `AbortSignal` fired |
+
+Every `APIError` carries `status`, `code`, `requestId`, and `details` from the API — useful
+when reporting an issue.
+
+## Automatic retries
+
+Transient failures (429, 5xx, connection errors, and timeouts) are retried automatically with
+exponential backoff and jitter, honoring the `Retry-After` header. Tune with `maxRetries`
+(default `2`), or disable per request with `{ maxRetries: 0 }`.
+
+## Timeouts & cancellation
+
+Each request times out after `timeout` ms (default 60s), throwing `APIConnectionTimeoutError`.
+Pass an `AbortSignal` to cancel a request yourself:
+
+```ts
+const controller = new AbortController();
+const promise = cesto.products.list({}, { signal: controller.signal });
+controller.abort(); // → APIUserAbortError
+```

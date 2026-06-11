@@ -1,0 +1,90 @@
+---
+title: "Cesto SDK"
+icon: "code"
+description: "A typed, server-side TypeScript client for Cesto's read-only API — baskets and positions."
+---
+
+The **Cesto SDK** (`@cesto/sdk`) is a typed TypeScript client for Cesto's read-only API.
+Use it to list and inspect baskets (products) and to look up a user's positions by their
+Solana wallet — all behind a single API key.
+
+<CardGroup cols={2}>
+  <Card title="Products" icon="basket-shopping">
+    List baskets and fetch full basket detail, optionally with backtested performance and charts.
+  </Card>
+  <Card title="Positions" icon="wallet">
+    Read a user's open and closing positions by their external Solana wallet address.
+  </Card>
+  <Card title="Fully typed" icon="code">
+    Every method and response is typed. Ships ESM + CommonJS with bundled type definitions.
+  </Card>
+  <Card title="Resilient" icon="shield-check">
+    Automatic retries with backoff, request timeouts, and a typed error hierarchy out of the box.
+  </Card>
+</CardGroup>
+
+## Requirements
+
+- **Node.js 18+** (uses the global `fetch`).
+- **Server-side only** — the SDK uses a secret API key and refuses to run in a browser.
+
+<Warning>
+  Never use the SDK in browser / client-side code — your secret key would be exposed to end
+  users. It is meant for backends, scripts, and serverless / edge functions.
+</Warning>
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @cesto/sdk
+```
+
+```bash pnpm
+pnpm add @cesto/sdk
+```
+
+```bash yarn
+yarn add @cesto/sdk
+```
+</CodeGroup>
+
+## Quickstart
+
+```ts
+import { Cesto } from '@cesto/sdk';
+
+const cesto = new Cesto({ apiKey: process.env.CESTO_API_KEY });
+
+// List baskets
+const products = await cesto.products.list();
+
+// Fetch one basket by slug
+const product = await cesto.products.get('my-basket-slug');
+
+// Look up positions by external Solana wallet
+const { positions } = await cesto.positions.list({
+  wallet: 'EXTERNAL_SOLANA_ADDRESS',
+});
+```
+
+<Note>
+  You need an API key to use the SDK. See [Authentication](/sdk/authentication) to request one.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="/sdk/authentication">
+    Get a key and choose your environment.
+  </Card>
+  <Card title="Configuration" icon="sliders" href="/sdk/configuration">
+    Client options, timeouts, and retries.
+  </Card>
+  <Card title="Products" icon="basket-shopping" href="/sdk/products">
+    List and fetch baskets.
+  </Card>
+  <Card title="Positions" icon="wallet" href="/sdk/positions">
+    Positions by wallet.
+  </Card>
+</CardGroup>
