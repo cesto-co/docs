@@ -36,6 +36,8 @@ try {
 | `AuthenticationError` | 401 — invalid / missing / revoked key |
 | `PermissionDeniedError` | 403 |
 | `NotFoundError` | 404 |
+| `ConflictError` | 409 |
+| `UnprocessableEntityError` | 422 |
 | `RateLimitError` | 429 — carries `retryAfter` (ms) |
 | `InternalServerError` | 5xx |
 | `APIConnectionError` | network failure |
@@ -47,7 +49,7 @@ when reporting an issue.
 
 ## Automatic retries
 
-Transient failures (429, 5xx, connection errors, and timeouts) are retried automatically with
+Transient failures (408, 409, 429, 5xx, connection errors, and timeouts) are retried automatically with
 exponential backoff and jitter, honoring the `Retry-After` header. Tune with `maxRetries`
 (default `2`), or disable per request with `{ maxRetries: 0 }`.
 

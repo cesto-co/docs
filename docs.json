@@ -97,7 +97,20 @@
       "href": "https://app.cesto.co"
     }
   },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity"
+    ]
+  },
   "footer": {
-    "socials": {}
+    "socials": {
+      "x": "https://x.com/cesto_co",
+      "telegram": "https://t.me/cesto_co",
+      "website": "https://cesto.co"
+    }
   }
 }

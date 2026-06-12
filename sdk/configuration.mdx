@@ -20,14 +20,14 @@ new Cesto({
   Secret API key. Falls back to `process.env.CESTO_API_KEY`. Required.
 </ParamField>
 <ParamField path="environment" type="'PRODUCTION' | 'BETA'" default="PRODUCTION">
-  Which deployed backend to target (production builds only — ignored locally). See
-  [Authentication](/sdk/authentication#environments).
+  Which backend to target: `PRODUCTION` → `backend.cesto.co`, `BETA` → `dev.backend.cesto.co`.
+  See [Authentication](/sdk/authentication#environments).
 </ParamField>
 <ParamField path="timeout" type="number" default="60000">
   Per-request timeout in milliseconds.
 </ParamField>
 <ParamField path="maxRetries" type="number" default="2">
-  Max automatic retries on transient failures (429, 5xx, network errors, timeouts).
+  Max automatic retries on transient failures (408, 409, 429, 5xx, network errors, timeouts).
 </ParamField>
 <ParamField path="fetch" type="typeof fetch">
   Custom fetch implementation (e.g. `undici`). Defaults to the global `fetch`.
