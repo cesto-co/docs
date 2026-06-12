@@ -7,7 +7,7 @@
     "light": "#4ADE80",
     "dark": "#4ADE80"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto_favicon.png",
   "seo": {
     "indexing": "all"
   },
@@ -80,8 +80,8 @@
     }
   },
   "logo": {
-    "light": "/logo/cesto-light.png",
-    "dark": "/logo/cesto-dark.png"
+    "light": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto-logo.svg",
+    "dark": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto-logo.svg"
   },
   "navbar": {
     "links": [
