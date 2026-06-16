@@ -1,0 +1,95 @@
+---
+title: "Usage"
+icon: "book"
+description: "How to embed a Cesto plugin on your page. One URL, one iframe tag, and the width is yours."
+---
+
+This page is everything you need to embed a plugin on your page. The whole integration is one URL inside an `<iframe>` tag. There is no JavaScript to install and no events to listen for. Pick a plugin, point it at a basket, choose a width, and you are done.
+
+## The URL
+
+```
+https://plugin.cesto.co/<plugin-name>?basket=<slug>
+```
+
+`<plugin-name>` is one of `hero-card`, `performance`, `overview`, or `pill-row`. `<slug>` is the basket's slug, which is the same value used in `app.cesto.co/product/<slug>`.
+
+## The four plugins
+
+| Plugin | `<plugin-name>` | Aspect ratio | Min width |
+|---|---|---|---|
+| Hero card | `hero-card` | 5 : 4 | 360 px |
+| Performance | `performance` | 15 : 8 | 540 px |
+| Overview | `overview` | 2 : 1 | 480 px |
+| Pill row | `pill-row` | 15 : 2 | 300 px |
+
+Aspect ratio is the recommended shape. Min width is the floor below which the plugin starts shedding affordances (the Invest text collapses to an arrow, allocation pills hide, and so on). The plugin still paints below that floor, it just simplifies.
+
+## Embed snippet
+
+Drop this into any HTML page. Replace `hero-card` and `ai-leaders-portfolio` with the plugin and basket slug you want.
+
+```html
+<iframe
+  src="https://plugin.cesto.co/hero-card?basket=ai-leaders-portfolio"
+  style="width: 100%; aspect-ratio: 5 / 4; border: 0;"
+  loading="lazy"
+  title="AI Leaders basket"
+></iframe>
+```
+
+That is the entire integration. The plugin fetches its own data, renders the basket, and opens `app.cesto.co/product/<slug>` in a new tab when the user taps Invest.
+
+## Finding a basket slug
+
+Every basket on `app.cesto.co` has a slug in its URL. Open the basket on the website and copy the last path segment, which is the slug:
+
+```
+https://app.cesto.co/product/ai-leaders-portfolio
+```
+
+In the URL above, the slug is the final segment: `ai-leaders-portfolio`. You can also discover slugs programmatically through the Cesto API at `GET /products`.
+
+## Sizing
+
+The plugin's interior uses CSS container queries, so it scales proportionally with whatever pixel width its parent column gives it. The recommended pattern is `width: 100%` plus `aspect-ratio`, letting the page decide width and letting the aspect ratio decide height.
+
+<CodeGroup>
+```html Responsive (recommended)
+<iframe
+  src="https://plugin.cesto.co/performance?basket=ai-leaders-portfolio"
+  style="width: 100%; aspect-ratio: 15 / 8; border: 0;"
+  loading="lazy"
+></iframe>
+```
+
+```html Fixed pixel size
+<iframe
+  src="https://plugin.cesto.co/performance?basket=ai-leaders-portfolio"
+  width="900"
+  height="480"
+  style="border: 0;"
+  loading="lazy"
+></iframe>
+```
+</CodeGroup>
+
+A few tips:
+
+- Keep `width: 100%` whenever possible and let the host column drive the width. The plugin will reflow itself.
+- Use `loading="lazy"` for plugins below the fold so the iframe defers until it scrolls into view.
+- The plugin host sets `X-Frame-Options: ALLOWALL` and `frame-ancestors *`, so any origin can embed it.
+
+## What you can change, and what you cannot
+
+Embedding is intentionally minimal. The only knob the host page controls is **size**: width, height, or aspect ratio. Everything else (theme, fonts, copy, behavior, the Invest destination) is fixed by the plugin and stays consistent with the rest of the Cesto product.
+
+If you need anything beyond a Cesto-styled basket card on your page, that is a different surface and not a plugin.
+
+## Next
+
+<CardGroup cols={1}>
+  <Card title="Open the playground" icon="circle-play" href="/plugins/playground">
+    Try every plugin against any live basket, right inside the docs.
+  </Card>
+</CardGroup>
