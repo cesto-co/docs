@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "mint",
   "name": "Cesto",
   "colors": {
-    "primary": "#4ADE80",
-    "light": "#4ADE80",
-    "dark": "#4ADE80"
+    "primary": "#16A34A",
+    "light": "#16A34A",
+    "dark": "#16A34A"
   },
   "favicon": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto_favicon.png",
   "seo": {
@@ -17,9 +17,9 @@
     }
   },
   "navigation": {
-    "anchors": [
+    "tabs": [
       {
-        "anchor": "Documentation",
+        "tab": "Documentation",
         "icon": "book-open",
         "groups": [
           {
@@ -52,7 +52,7 @@
         ]
       },
       {
-        "anchor": "Developers",
+        "tab": "Developers",
         "icon": "code",
         "groups": [
           {
@@ -67,17 +67,22 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Plugins",
+        "icon": "puzzle-piece",
+        "groups": [
+          {
+            "group": "Plugins",
+            "pages": [
+              "plugins/overview",
+              "plugins/usage",
+              "plugins/playground"
+            ]
+          }
+        ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Website",
-          "href": "https://cesto.co",
-          "icon": "globe"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto-logo.svg",

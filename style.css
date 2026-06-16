@@ -1,0 +1,43 @@
+/* ---------------------------------------------------------------------------
+   Cesto docs — custom styling
+   --------------------------------------------------------------------------- */
+
+/* Brand colour over the mint theme ----------------------------------------
+   The mint theme applies the Cesto green (--primary, #4ADE80) to the active
+   nav item, but its hover states fall back to a neutral gray. Force those
+   onto the Cesto green so hovering a page link tints green like the active
+   item, instead of the muted gray mint ships by default.
+
+   Scoped to .sidebar-group (the page links — Overview / Usage / Playground)
+   so the top-level section anchors (Documentation / Developers / Plugins /
+   Website) keep their own treatment and don't get a heavy green bar on hover. */
+.sidebar-group a:hover {
+  color: rgb(74 222 128) !important;
+}
+.sidebar-group a.group:hover {
+  background-color: rgb(74 222 128 / 0.1) !important;
+}
+
+
+/* Plugin playground page: widen the content column so the embedded playground
+   and the page text use the available space instead of sitting in the narrow
+   reading column. Scoped to the playground page via the .cesto-pg-page marker
+   that page renders, so no other page is affected.
+
+   This is done by widening the *column* (not by breaking the iframe out with
+   viewport math), which keeps the page fully responsive — text and iframe
+   share one column width at every breakpoint, and on tablet/mobile the column
+   already spans the freed space once the sidebar collapses to a drawer. */
+
+/* Lift the prose reading-width cap on the playground page only. */
+.mdx-content:has(.cesto-pg-page) {
+  max-width: none;
+}
+
+/* On desktop (>=1280px) the right-hand table-of-contents gutter is empty in
+   wide mode. Bleed the column into it so the playground gets real width. */
+@media (min-width: 1280px) {
+  .mdx-content:has(.cesto-pg-page) {
+    margin-right: -10rem;
+  }
+}
