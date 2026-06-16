@@ -9,14 +9,14 @@ This page is everything you need to embed a plugin on your page. The whole integ
 ## The URL
 
 ```
-https://app.cesto.co/plugin/<plugin-url-path>/?basket=<slug>
+https://plugin.cesto.co/<plugin-name>?basket=<slug>
 ```
 
-`<plugin-url-path>` is one of `hero-card`, `performance`, `overview`, or `pill-row`. `<slug>` is the basket's slug, which is the same value used in `app.cesto.co/product/<slug>`.
+`<plugin-name>` is one of `hero-card`, `performance`, `overview`, or `pill-row`. `<slug>` is the basket's slug, which is the same value used in `app.cesto.co/product/<slug>`.
 
 ## The four plugins
 
-| Plugin | `<plugin-url-path>` | Aspect ratio | Min width |
+| Plugin | `<plugin-name>` | Aspect ratio | Min width |
 |---|---|---|---|
 | Hero card | `hero-card` | 5 : 4 | 360 px |
 | Performance | `performance` | 15 : 8 | 540 px |
@@ -27,11 +27,11 @@ Aspect ratio is the recommended shape. Min width is the floor below which the pl
 
 ## Embed snippet
 
-Drop this into any HTML page. Replace `hero-card` and `ai-leaders` with the plugin and basket slug you want.
+Drop this into any HTML page. Replace `hero-card` and `ai-leaders-portfolio` with the plugin and basket slug you want.
 
 ```html
 <iframe
-  src="https://app.cesto.co/plugin/hero-card/?basket=ai-leaders"
+  src="https://plugin.cesto.co/hero-card?basket=ai-leaders-portfolio"
   style="width: 100%; aspect-ratio: 5 / 4; border: 0;"
   loading="lazy"
   title="AI Leaders basket"
@@ -45,10 +45,10 @@ That is the entire integration. The plugin fetches its own data, renders the bas
 Every basket on `app.cesto.co` has a slug in its URL. Open the basket on the website and copy the last path segment, which is the slug:
 
 ```
-https://app.cesto.co/product/ai-leaders
+https://app.cesto.co/product/ai-leaders-portfolio
 ```
 
-In the URL above, the slug is the final segment: `ai-leaders`. You can also discover slugs programmatically through the Cesto API at `GET /products`.
+In the URL above, the slug is the final segment: `ai-leaders-portfolio`. You can also discover slugs programmatically through the Cesto API at `GET /products`.
 
 ## Sizing
 
@@ -57,7 +57,7 @@ The plugin's interior uses CSS container queries, so it scales proportionally wi
 <CodeGroup>
 ```html Responsive (recommended)
 <iframe
-  src="https://app.cesto.co/plugin/performance/?basket=ai-leaders"
+  src="https://plugin.cesto.co/performance?basket=ai-leaders-portfolio"
   style="width: 100%; aspect-ratio: 15 / 8; border: 0;"
   loading="lazy"
 ></iframe>
@@ -65,7 +65,7 @@ The plugin's interior uses CSS container queries, so it scales proportionally wi
 
 ```html Fixed pixel size
 <iframe
-  src="https://app.cesto.co/plugin/performance/?basket=ai-leaders"
+  src="https://plugin.cesto.co/performance?basket=ai-leaders-portfolio"
   width="900"
   height="480"
   style="border: 0;"
