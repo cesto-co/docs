@@ -6,19 +6,27 @@ description: "Common questions about Cesto."
 
 **What is Cesto?**
 
-Cesto is a platform for investing in narrative-driven baskets on Solana. Each basket is a curated portfolio of assets built around a specific theme or conviction — like defense spending, Congressional trading, or AI. You invest in one click, and the assets go directly to your wallet.
+Cesto is a platform for investing in narrative-driven baskets on Solana. Each basket is a curated portfolio of assets built around a specific theme or conviction, like defense spending, Congressional trading, or AI. You invest in one click, and the assets are held in your own wallet.
 
 **How do I get started?**
 
-Go to [app.cesto.co](https://app.cesto.co), connect your Solana wallet, browse the available baskets, and invest. That's it.
+Go to [app.cesto.co](https://app.cesto.co) and sign in with Google (Cesto creates a wallet for you), or by connecting an existing Solana wallet. Add some USDC, browse the available baskets, and invest. That's it.
+
+**How do I add or withdraw funds?**
+
+Baskets are funded in USDC. You can deposit USDC to your account and withdraw USDC out to any Solana address at any time. See [Funding](/cesto/funding).
 
 **What happens when I invest in a basket?**
 
-You receive the underlying assets directly in your wallet. Not a token representing the basket — the actual assets, at the basket's target weights.
+You receive the underlying assets in your wallet at the basket's target weights. Not a token representing the basket, the actual assets. Some baskets also include [prediction-market positions](/cesto/prediction-markets) alongside tokens.
 
 **Is my money safe?**
 
-Cesto is fully self-custodial. Your assets stay in your wallet at all times. We never take custody of your funds, and you can exit any position whenever you want. [More on security](/cesto/security).
+Cesto is non-custodial: your funds stay in a wallet you control. With the embedded wallet, your key is secured with MPC and never assembled in one place. You can export it or withdraw at any time. You authorize every action you take, so Cesto only ever does what you've signed for. [More on security](/cesto/security).
+
+**Can Cesto move my funds on its own?**
+
+No, not beyond what you authorize. You sign each invest, rebalance, close, and withdrawal, and Cesto executes only that. The one exception is auto-rebalance: if you turn it on for a basket, you pre-authorize Cesto to realign that position into new strategy versions for you. It's off by default, and you can turn it off anytime. [More on security](/cesto/security).
 
 **What blockchain does Cesto run on?**
 
@@ -26,24 +34,32 @@ Solana.
 
 **What are the returns shown on each basket?**
 
-The annual return percentages are based on backtested historical performance over the past year. They show how the basket's strategy would have performed — not a guarantee of future results.
+The annual return percentages are based on backtested historical performance over the past year. They show how the basket's strategy would have performed, not a guarantee of future results.
 
 **What are RWAs?**
 
 Real-world assets (RWAs) are tokenized versions of traditional assets like stocks and commodities, made accessible on-chain. Some baskets include RWAs alongside crypto-native tokens to give you exposure to both traditional and digital markets.
 
+**What are prediction markets?**
+
+Some baskets include positions in prediction markets: stakes on real-world outcomes that resolve to a definite result on a set date. [Learn more](/cesto/prediction-markets).
+
+**Are there fees?**
+
+Cesto charges a small platform fee on transactions, and creator baskets may include a creator fee. You'll always see what applies before you confirm.
+
 **Can I exit my position anytime?**
 
-Yes. Your assets are in your wallet. You can sell any or all of them at any time — through Cesto or directly on any Solana DEX.
+Yes. There are no lock-ups. Close a position and your assets are swapped back to USDC, which you can withdraw to any Solana address. If you used an external wallet, your assets are in your own wallet to do with as you like.
 
 **What is rebalancing?**
 
-When market movement causes your holdings to drift from the basket's target allocation, rebalancing adjusts your positions back to the intended weights. It's one click, and you approve every transaction. [Learn more](/cesto/rebalancing).
+When market movement or a strategy update causes your holdings to drift from the basket's target allocation, rebalancing realigns your positions. By default you approve each rebalance; you can also opt in to automatic rebalancing per basket. [Learn more](/cesto/rebalancing).
 
 **Can I create my own basket?**
 
-Not yet. Right now, Cesto offers curated baskets. We're working toward opening the platform to external curators and eventually to anyone who wants to build and share their own baskets.
+Yes. Anyone can publish a basket idea on [Cesto Labs](/cesto/labs) and have the community vote on it. To build fully-managed, investable product baskets (with versioning and fee sharing), see the [Creator program](/cesto/creators).
 
 **Do I need technical knowledge?**
 
-No. If you know how to connect a wallet and approve a transaction, you can use Cesto.
+No. If you can sign in and approve an action, you can use Cesto.

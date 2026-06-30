@@ -80,11 +80,67 @@ A few tips:
 - Use `loading="lazy"` for plugins below the fold so the iframe defers until it scrolls into view.
 - The plugin host sets `X-Frame-Options: ALLOWALL` and `frame-ancestors *`, so any origin can embed it.
 
-## What you can change, and what you cannot
+## Theming
 
-Embedding is intentionally minimal. The only knob the host page controls is **size**: width, height, or aspect ratio. Everything else (theme, fonts, copy, behavior, the Invest destination) is fixed by the plugin and stays consistent with the rest of the Cesto product.
+By default, every plugin renders Cesto's canonical dark theme, so it looks consistent wherever it's embedded. If you want it to match your own site, you can override individual design tokens: colors, corner radius, fonts, and spacing.
 
-If you need anything beyond a Cesto-styled basket card on your page, that is a different surface and not a plugin.
+### Theme fields
+
+Every field is optional. Pass any subset; anything you don't set keeps the Cesto default.
+
+| Field | Type | What it controls |
+|---|---|---|
+| `accent` / `accentForeground` | CSS color | Primary action color, and the text on it |
+| `background` / `foreground` | CSS color | Surface, and body text |
+| `muted` / `mutedForeground` | CSS color | Secondary surfaces, and their text |
+| `border` | CSS color | Borders and dividers |
+| `positive` / `negative` | CSS color | Gains and losses |
+| `radius` | px or length | Corner rounding |
+| `fontFamily` / `fontFamilyMono` | font stack | Text and numeric fonts |
+| `padding` | px or length | Outer content padding |
+| `maxWidth` | `none` or length | Cap on content width |
+
+<Note>
+A bad value can't break a plugin. Each field is validated on its own: an invalid value (say, `accent=notacolor`) is dropped and falls back to the Cesto default, and unknown params are ignored.
+</Note>
+
+### Setting a theme
+
+The simplest way is to add the tokens as query params on the iframe URL, right alongside `basket`. Remember to URL-encode colors (`#` becomes `%23`):
+
+```html
+<iframe
+  src="https://plugin.cesto.co/overview?basket=ai-leaders-portfolio&accent=%237c7cf0&radius=16&background=transparent"
+  style="width: 100%; aspect-ratio: 2 / 1; border: 0;"
+  loading="lazy"
+></iframe>
+```
+
+<Tip>
+A plugin's body is transparent by default, so it blends into your page background. Set `background` explicitly if you want it to fill with its own color.
+</Tip>
+
+### Live theming (optional)
+
+To change the theme after load (for example, to follow a light/dark toggle on your page), the optional `@cesto/embed-sdk` host helper lets you push config in live and auto-resizes the iframe to fit its content:
+
+```ts
+import { connectCestoFrame } from "@cesto/embed-sdk/host";
+
+const iframe = document.querySelector("iframe")!;
+const frame = connectCestoFrame(iframe);
+
+// later, e.g. on a theme toggle:
+frame.setConfig({ accent: "#7c7cf0", background: "#0b0d10" });
+```
+
+You can match your host's look by reading your own design tokens off the page and passing them straight in.
+
+## What stays fixed
+
+Theming covers look, not content. A plugin's copy, its data, and the Invest destination (`app.cesto.co/product/<slug>`) are fixed and stay consistent with the rest of the Cesto product.
+
+If you need anything beyond a themeable basket card on your page, that is a different surface and not a plugin.
 
 ## Next
 

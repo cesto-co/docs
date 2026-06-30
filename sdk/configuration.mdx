@@ -9,9 +9,9 @@ description: "Client options and per-request overrides."
 ```ts
 new Cesto({
   apiKey: 'cesto_sk_…',       // required (or CESTO_API_KEY env)
-  environment: 'PRODUCTION',  // 'PRODUCTION' | 'BETA' — default 'PRODUCTION'
-  timeout: 60_000,            // per-request timeout in ms — default 60s
-  maxRetries: 2,              // automatic retries on transient errors — default 2
+  environment: 'PRODUCTION',  // 'PRODUCTION' | 'BETA', default 'PRODUCTION'
+  timeout: 60_000,            // per-request timeout in ms, default 60s
+  maxRetries: 2,              // automatic retries on transient errors, default 2
   fetch: customFetch,         // optional custom fetch implementation
 });
 ```

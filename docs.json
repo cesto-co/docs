@@ -26,14 +26,24 @@
             "group": "Cesto",
             "pages": [
               "cesto/what-is-cesto",
-              "cesto/how-it-works"
+              "cesto/how-it-works",
+              "cesto/prediction-markets"
             ]
           },
           {
             "group": "Using Cesto",
             "pages": [
+              "cesto/funding",
               "cesto/my-portfolio",
               "cesto/rebalancing"
+            ]
+          },
+          {
+            "group": "Community & Creators",
+            "pages": [
+              "cesto/labs",
+              "cesto/creators",
+              "cesto/creator-toolkit"
             ]
           },
           {

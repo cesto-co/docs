@@ -5,12 +5,12 @@ description: "API keys and environments for the Cesto SDK."
 ---
 
 The SDK authenticates with a **secret API key**. Keys look like `cesto_sk_…` and are sent
-automatically with every request — you never set headers yourself.
+automatically with every request; you never set headers yourself.
 
 ## Getting a key
 
 <Note>
-  API keys are issued by the Cesto team — there's no self-serve portal yet.
+  API keys are issued by the Cesto team; there's no self-serve portal yet.
 
   **Contact us to request a key:** reach out on our
   [community](https://t.me/cesto_co) or through your Cesto contact, and let us know which
@@ -39,7 +39,7 @@ If no key is found, the constructor throws.
 
 ## Environments
 
-Select the backend with the `environment` option — you choose an environment, not a URL.
+Select the backend with the `environment` option: you choose an environment, not a URL.
 
 | `environment` | Backend |
 | --- | --- |
@@ -56,7 +56,7 @@ const cesto = new Cesto({
 ## Keep your key safe
 
 <Warning>
-  Treat the key like a password — keep it server-side, store it in a secret manager or
+  Treat the key like a password: keep it server-side, store it in a secret manager or
   environment variable, and never commit it to source control. To rotate or revoke a key,
   contact the Cesto team.
 </Warning>
