@@ -53,20 +53,6 @@ const detailed = await cesto.products.get('my-basket-slug', {
 detailed.backtestChart; // chart data, or null on failure
 ```
 
-The chart is a union: a portfolio value chart or a prediction-market chart. Discriminate it
-with the shipped type guard:
-
-```ts
-import { isPredictionMarketChart } from '@cesto/sdk';
-
-const chart = detailed.backtestChart;
-if (chart && isPredictionMarketChart(chart)) {
-  chart.markets; // prediction markets
-} else if (chart) {
-  chart.timeSeries; // portfolio value over time
-}
-```
-
 <ParamField path="includeBacktestChart" type="boolean" default="false">
   Also fetch and attach the backtested chart.
 </ParamField>

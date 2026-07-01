@@ -1,49 +1,38 @@
 ---
 title: "Security & Self-Custody"
 icon: "shield"
-description: "Non-custodial by design. You own your keys, and you authorize every action."
+description: "Non-custodial by design. You stay in control of your funds."
 ---
 
 ## Non-custodial by design
 
 Cesto is non-custodial: you own your wallet and the assets in it, and Cesto never takes custody of your funds. There's no Cesto-held account, escrow, or vault standing between you and your money.
 
-What that means in practice depends on your wallet:
+- **No custody risk.** Cesto can't move or spend your assets without your authorization.
+- **No counterparty risk.** You're not handing your money to a third party to hold.
+- **No lock-ups.** Your assets are always yours. Exit any position, any time.
 
-- **Embedded wallet (Google sign-in).** Cesto sets up a wallet for you using multi-party computation (MPC), powered by Para. Your private key is split into shares and is **never held or assembled in one place**: not by Cesto, not by Para. Cesto stores only an encrypted share and cannot sign on its own; every signature is produced together with Para's MPC service. You can **export your private key** or **withdraw to any wallet** at any time. The flip side of being in control: if you export your key and lose it, no one, including Cesto or Para, can recover it for you.
-- **External wallet (Phantom, Solflare, …).** Your own self-custody wallet, connected directly. You hold the keys exactly as you do on any Solana app.
+## You're always in control
 
-## You authorize every action
-
-Cesto executes transactions for you, but only the ones you authorize. Every time you invest, rebalance, close a position, or withdraw, you sign **that specific action**: the amount, the basket, and (for withdrawals) the destination address. Cesto then carries it out exactly as signed. Nothing else moves.
-
-Behind the scenes, the on-chain transaction is signed server-side together with Para's MPC, but only after your signed authorization for that exact action has been verified. There are no standing spending permissions: each action is authorized on its own, and authorizations are single-use and short-lived.
+Every action on Cesto happens only when you authorize it. When you invest, rebalance, close a position, or withdraw, you approve that specific action, and Cesto carries it out exactly as you approved. You can withdraw your funds to any Solana wallet whenever you want.
 
 <Note>
-**One exception, by your choice: auto-rebalance.** If you switch on auto-rebalance for a basket, you pre-authorize Cesto to realign *that* position into new versions of the strategy on your behalf, so you don't have to sign each update. It's **off by default**, scoped to that basket, and you can turn it off anytime, after which every rebalance needs your signature again. [Learn more](/cesto/rebalancing).
+**One option, by your choice: auto-rebalance.** If you switch on auto-rebalance for a basket, you pre-authorize Cesto to realign that position when the strategy updates, so you don't have to approve each update. It's off by default, and you can turn it off anytime. [Learn more](/cesto/rebalancing).
 </Note>
-
-## What Cesto can't do
-
-- Move or spend your funds beyond the actions you authorize (and any auto-rebalance you've turned on)
-- Hold or assemble your full private key
-- Freeze or seize your assets
-- Reverse a transaction once it's confirmed on-chain
-- Recover your private key if you export it and lose it
 
 ## Best practices
 
 <CardGroup cols={2}>
   <Card title="Secure your sign-in" icon="user-shield">
-    Protect the Google account or external wallet you use to access Cesto, and turn on two-factor authentication where you can.
+    Protect the account or wallet you use to access Cesto, and turn on two-factor authentication where you can.
   </Card>
-  <Card title="Guard an exported key" icon="key">
-    If you export your embedded wallet's private key, or use an external wallet, never share the key or seed phrase. Cesto will never ask for it, and no legitimate service will.
+  <Card title="Keep your credentials private" icon="key">
+    Never share your wallet's seed phrase or private key. Cesto will never ask for it, and no legitimate service will.
   </Card>
   <Card title="Verify the URL" icon="globe">
     Always make sure you're on app.cesto.co before signing in or connecting a wallet.
   </Card>
-  <Card title="Review before authorizing" icon="eye">
-    Check the details of any action (amounts, assets, and destinations) before you sign.
+  <Card title="Review before approving" icon="eye">
+    Check the details of any action (amounts, assets, and destinations) before you approve it.
   </Card>
 </CardGroup>

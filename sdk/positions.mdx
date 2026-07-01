@@ -5,7 +5,7 @@ description: "Look up positions by external Solana wallet."
 ---
 
 `cesto.positions.list` returns a user's open and closing positions, resolved from their
-**external Solana wallet address** (Phantom, Solflare, etc.), with no end-user login required.
+**external Solana wallet address**, with no end-user login required.
 
 ```ts
 const { positions, pendingClosePositions } = await cesto.positions.list({

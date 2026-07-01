@@ -26,8 +26,7 @@
             "group": "Cesto",
             "pages": [
               "cesto/what-is-cesto",
-              "cesto/how-it-works",
-              "cesto/prediction-markets"
+              "cesto/how-it-works"
             ]
           },
           {
@@ -42,8 +41,7 @@
             "group": "Community & Creators",
             "pages": [
               "cesto/labs",
-              "cesto/creators",
-              "cesto/creator-toolkit"
+              "cesto/creators"
             ]
           },
           {
