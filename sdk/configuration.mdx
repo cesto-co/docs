@@ -9,7 +9,6 @@ description: "Client options and per-request overrides."
 ```ts
 new Cesto({
   apiKey: 'cesto_sk_…',       // required (or CESTO_API_KEY env)
-  environment: 'PRODUCTION',  // 'PRODUCTION' | 'BETA' — default 'PRODUCTION'
   timeout: 60_000,            // per-request timeout in ms — default 60s
   maxRetries: 2,              // automatic retries on transient errors — default 2
   fetch: customFetch,         // optional custom fetch implementation
@@ -18,10 +17,6 @@ new Cesto({
 
 <ParamField path="apiKey" type="string">
   Secret API key. Falls back to `process.env.CESTO_API_KEY`. Required.
-</ParamField>
-<ParamField path="environment" type="'PRODUCTION' | 'BETA'" default="PRODUCTION">
-  Which backend to target: `PRODUCTION` → `backend.cesto.co`, `BETA` → `dev.backend.cesto.co`.
-  See [Authentication](/sdk/authentication#environments).
 </ParamField>
 <ParamField path="timeout" type="number" default="60000">
   Per-request timeout in milliseconds.

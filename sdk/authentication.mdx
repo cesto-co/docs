@@ -1,7 +1,7 @@
 ---
 title: "Authentication"
 icon: "key"
-description: "API keys and environments for the Cesto SDK."
+description: "API keys for the Cesto SDK."
 ---
 
 The SDK authenticates with a **secret API key**. Keys look like `cesto_sk_…` and are sent
@@ -13,12 +13,8 @@ automatically with every request — you never set headers yourself.
   API keys are issued by the Cesto team — there's no self-serve portal yet.
 
   **Contact us to request a key:** reach out on our
-  [community](https://t.me/cesto_co) or through your Cesto contact, and let us know which
-  environment (Production or Beta) you need.
+  [community](https://t.me/cesto_co) or through your Cesto contact.
 </Note>
-
-Keys are **environment-specific**: a Production key only works against the Production backend,
-and a Beta key only against Beta. Request the key for the environment you're integrating with.
 
 ## Providing the key
 
@@ -37,21 +33,10 @@ const cesto = new Cesto();
 
 If no key is found, the constructor throws.
 
-## Environments
+## Backend
 
-Select the backend with the `environment` option — you choose an environment, not a URL.
-
-| `environment` | Backend |
-| --- | --- |
-| `PRODUCTION` *(default)* | `https://backend.cesto.co` |
-| `BETA` | `https://dev.backend.cesto.co` |
-
-```ts
-const cesto = new Cesto({
-  apiKey: process.env.CESTO_API_KEY,
-  environment: 'BETA',
-});
-```
+The SDK always targets the Cesto production backend at `https://backend.cesto.co`. There's
+nothing to configure — you supply a key and go.
 
 ## Keep your key safe
 
