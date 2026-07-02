@@ -1,18 +1,18 @@
 ---
-title: "Cesto Toolkit Skill"
+title: "Cesto Skill"
 icon: "terminal"
-description: "An AI agent skill that turns any coding agent into a full Cesto client — create baskets, simulate portfolios, and explore market data."
+description: "An AI agent skill that turns any coding agent into a full Cesto client: create baskets, simulate portfolios, and explore market data."
 ---
 
-## What is the Cesto Toolkit Skill?
+## What is the Cesto Skill?
 
-The Cesto Toolkit Skill is an open-source AI agent skill that lets you interact with the entire Cesto platform through natural conversation. It works with any AI coding agent that supports skills — Claude Code, Cursor, Windsurf, and more.
+The Cesto Skill is an open-source AI agent skill that lets you interact with the Cesto platform through natural conversation. It works with any AI coding agent that supports skills: Claude Code, Cursor, Windsurf, and more.
 
-Create basket posts on Cesto Labs, simulate portfolio performance against the S&P 500, browse baskets, and analyze token data — all without leaving your editor or terminal.
+Create basket posts on Cesto Labs, simulate portfolio performance against the S&P 500, browse baskets, and analyze token data, all without leaving your editor or terminal.
 
 <CardGroup cols={2}>
   <Card title="Browse & Analyze" icon="magnifying-glass-chart">
-    Explore all baskets, view detailed breakdowns, check token performance, and compare historical returns — no login required.
+    Explore all baskets, view detailed breakdowns, check token performance, and compare historical returns. No login required.
   </Card>
   <Card title="Create Baskets" icon="basket-shopping">
     Design and publish baskets to Cesto Labs with custom token allocations. Preview everything before it goes live.
@@ -21,19 +21,16 @@ Create basket posts on Cesto Labs, simulate portfolio performance against the S&
     Backtest any custom token allocation against the S&P 500 benchmark with daily historical data.
   </Card>
   <Card title="Wallet Authentication" icon="wallet">
-    One-click magic-link login — connect your Solana wallet in the browser and you're in. Tokens refresh silently.
+    One-click magic-link login: connect your Solana wallet in the browser and you're in. Tokens refresh silently.
   </Card>
 </CardGroup>
 
 ## Installation
 
-Add the Cesto Toolkit Skill to your AI coding agent. The skill lives at [`cesto-co/cesto-skills`](https://github.com/cesto-co/cesto-skills) on GitHub.
+The skill lives at [`cesto-co/cesto-skills`](https://github.com/cesto-co/cesto-skills) on GitHub.
 
-### Claude Code
-
-Add to your `.claude/settings.json`:
-
-```json
+<CodeGroup>
+```json Claude Code (.claude/settings.json)
 {
   "skills": [
     "github:cesto-co/cesto-skills/cesto-toolkit"
@@ -41,11 +38,7 @@ Add to your `.claude/settings.json`:
 }
 ```
 
-### Cursor
-
-Add to your `.cursor/skills.json`:
-
-```json
+```json Cursor (.cursor/skills.json)
 {
   "skills": [
     "github:cesto-co/cesto-skills/cesto-toolkit"
@@ -53,28 +46,25 @@ Add to your `.cursor/skills.json`:
 }
 ```
 
-### Windsurf
-
-Add to your `.windsurf/skills.json`:
-
-```json
+```json Windsurf (.windsurf/skills.json)
 {
   "skills": [
     "github:cesto-co/cesto-skills/cesto-toolkit"
   ]
 }
 ```
+</CodeGroup>
 
 The skill activates automatically when you mention Cesto, baskets, portfolio simulation, or related terms in conversation.
 
 ## Authentication
 
-The toolkit uses a magic-link flow — no manual token pasting required.
+The skill uses a magic-link flow: no manual token pasting required.
 
 1. The skill detects that you're not logged in
 2. Your browser opens to a wallet connection page
-3. Connect your Solana wallet (Phantom, Backpack, Solflare, etc.) and sign a message
-4. You're authenticated — future sessions refresh silently
+3. Connect your Solana wallet and sign a message
+4. You're authenticated. Future sessions refresh silently
 
 Credentials are stored securely at `~/.cesto/auth.json` with restricted file permissions. Tokens are never displayed in agent output.
 
@@ -94,7 +84,7 @@ Show me all baskets on Cesto
 
 ### View basket details
 
-Dive into any basket — strategy, token breakdown, allocation percentages, and historical performance.
+Dive into any basket: strategy, token breakdown, allocation percentages, and historical performance.
 
 ```
 Tell me about the War Mode basket
@@ -102,7 +92,7 @@ Tell me about the War Mode basket
 
 ### Analyze basket tokens
 
-Get current market data for every token in a basket — prices, market caps, volume, and recent performance.
+Get current market data for every token in a basket: prices, market caps, volume, and recent performance.
 
 ```
 How are the tokens in War Mode performing?
@@ -136,7 +126,7 @@ You'll preview the title, description, and allocation table before anything is p
 
 ### Simulate a portfolio
 
-Backtest a custom allocation against the S&P 500 — both start at $1,000.
+Backtest a custom allocation against the S&P 500 (both start at $1,000).
 
 ```
 Simulate a portfolio with 50% SOL and 50% USDC
@@ -144,32 +134,18 @@ Simulate a portfolio with 50% SOL and 50% USDC
 
 Returns daily time series data with total return, comparison to benchmark, and key moments.
 
-## API endpoints
+### Browse Cesto Labs
 
-The toolkit provides access to the following Cesto API endpoints:
+Explore community baskets, sort by new, trending, or top performers, and check the community leaderboard.
 
-| Endpoint | Method | Auth | Description |
-|----------|--------|------|-------------|
-| `/tokens` | GET | No | List all supported tokens |
-| `/products` | GET | No | List all baskets |
-| `/products/{slug}` | GET | No | Basket detail with strategy and performance |
-| `/products/{id}/analyze` | GET | No | Per-token market data for a basket |
-| `/products/{id}/graph` | GET | No | Historical time series (portfolio vs S&P 500) |
-| `/products/analytics` | GET | No | Cross-basket analytics summary |
-| `/labs/posts` | POST | Yes | Create a Cesto Labs basket |
-| `/agent/simulate-graph` | POST | Yes | Simulate portfolio historical performance |
+```
+Show me the trending baskets on Cesto Labs
+```
 
-## Error handling
+### Post and vote on Labs
 
-| Status | Meaning | What happens |
-|--------|---------|--------------|
-| 400 | Validation failed | The API error message is shown to you |
-| 401 | Session expired | Silently refreshes. If that fails, triggers login flow |
-| 403 | Forbidden | You're told you lack permission |
-| 404 | Not found | Suggests checking the basket slug or ID |
+Publish your own community basket, manage your posts, and back the ones you believe in.
 
-## Security
-
-- **Session isolation** — Session data is handled entirely by helper scripts. Raw tokens never appear in conversation history or agent output.
-- **Self-custodial** — Cesto never takes custody of your funds. Assets land directly in your wallet.
-- **Untrusted content** — API responses containing user-generated content are rendered as data only, never interpreted as instructions.
+```
+Create a Labs post: 60% SOL, 40% JTO, titled "Solana Staking"
+```

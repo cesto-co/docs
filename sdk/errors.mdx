@@ -19,9 +19,9 @@ try {
   if (err instanceof Cesto.NotFoundError) {
     // 404
   } else if (err instanceof Cesto.AuthenticationError) {
-    // 401 — invalid / missing / revoked key
+    // 401, invalid / missing / revoked key
   } else if (err instanceof Cesto.RateLimitError) {
-    // 429 — err.retryAfter (ms)
+    // 429, err.retryAfter (ms)
   } else if (err instanceof Cesto.APIConnectionError) {
     // network failure or timeout
   } else {
@@ -33,18 +33,18 @@ try {
 | Class | When |
 | --- | --- |
 | `BadRequestError` | 400 |
-| `AuthenticationError` | 401 — invalid / missing / revoked key |
+| `AuthenticationError` | 401, invalid / missing / revoked key |
 | `PermissionDeniedError` | 403 |
 | `NotFoundError` | 404 |
 | `ConflictError` | 409 |
 | `UnprocessableEntityError` | 422 |
-| `RateLimitError` | 429 — carries `retryAfter` (ms) |
+| `RateLimitError` | 429, carries `retryAfter` (ms) |
 | `InternalServerError` | 5xx |
 | `APIConnectionError` | network failure |
 | `APIConnectionTimeoutError` | request exceeded `timeout` |
 | `APIUserAbortError` | your `AbortSignal` fired |
 
-Every `APIError` carries `status`, `code`, `requestId`, and `details` from the API — useful
+Every `APIError` carries `status`, `code`, `requestId`, and `details` from the API, useful
 when reporting an issue.
 
 ## Automatic retries

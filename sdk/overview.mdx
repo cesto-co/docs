@@ -1,12 +1,12 @@
 ---
 title: "Cesto SDK"
 icon: "code"
-description: "A typed, server-side TypeScript client for Cesto's read-only API — baskets and positions."
+description: "A typed, server-side TypeScript client for Cesto's read-only API: baskets and positions."
 ---
 
 The **Cesto SDK** (`@cesto/sdk`) is a typed TypeScript client for Cesto's read-only API.
 Use it to list and inspect baskets (products) and to look up a user's positions by their
-Solana wallet — all behind a single API key.
+Solana wallet, all behind a single API key.
 
 <CardGroup cols={2}>
   <Card title="Products" icon="basket-shopping">
@@ -26,10 +26,10 @@ Solana wallet — all behind a single API key.
 ## Requirements
 
 - **Node.js 18+** (uses the global `fetch`).
-- **Server-side only** — the SDK uses a secret API key and refuses to run in a browser.
+- **Server-side only**: the SDK uses a secret API key and refuses to run in a browser.
 
 <Warning>
-  Never use the SDK in browser / client-side code — your secret key would be exposed to end
+  Never use the SDK in browser / client-side code; your secret key would be exposed to end
   users. It is meant for backends, scripts, and serverless / edge functions.
 </Warning>
 

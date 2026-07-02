@@ -1,54 +1,38 @@
 ---
 title: "Security & Self-Custody"
 icon: "shield"
-description: "Your wallet, your keys, your assets. Always."
+description: "Non-custodial by design. You stay in control of your funds."
 ---
 
-## You own everything
+## Non-custodial by design
 
-Cesto is fully self-custodial. When you invest in a basket, the underlying assets go directly into your wallet. Not into an escrow. Not into a smart contract vault. Your wallet.
+Cesto is non-custodial: you own your wallet and the assets in it, and Cesto never takes custody of your funds. There's no Cesto-held account, escrow, or vault standing between you and your money.
 
-This means:
-
-- **No custody risk.** Cesto never holds your funds. We can't access, freeze, or move your assets.
-- **No counterparty risk.** You're not trusting a third party with your money.
+- **No custody risk.** Cesto can't move or spend your assets without your authorization.
+- **No counterparty risk.** You're not handing your money to a third party to hold.
 - **No lock-ups.** Your assets are always yours. Exit any position, any time.
 
-## How transactions work
+## You're always in control
 
-Every action on Cesto requires your explicit approval:
+Every action on Cesto happens only when you authorize it. When you invest, rebalance, close a position, or withdraw, you approve that specific action, and Cesto carries it out exactly as you approved. You can withdraw your funds to any Solana wallet whenever you want.
 
-1. You choose to invest or rebalance
-2. Cesto prepares the transaction
-3. You review the details in your wallet
-4. You sign and approve
-
-Nothing happens without your signature. There's no pre-authorized access, no spending permissions that persist after a transaction. Each action is a standalone approval.
-
-## What Cesto can't do
-
-To be clear about the boundaries:
-
-- We can't access your wallet or private keys
-- We can't freeze or seize your assets
-- We can't reverse a transaction once confirmed
-- We can't recover a lost seed phrase
-
-Self-custody means you're in full control — which also means the security of your wallet is your responsibility.
+<Note>
+**One option, by your choice: auto-rebalance.** If you switch on auto-rebalance for a basket, you pre-authorize Cesto to realign that position when the strategy updates, so you don't have to approve each update. It's off by default, and you can turn it off anytime. [Learn more](/cesto/rebalancing).
+</Note>
 
 ## Best practices
 
 <CardGroup cols={2}>
-  <Card title="Protect your seed phrase" icon="key">
-    Never share it with anyone. Cesto will never ask for it. No legitimate service will.
+  <Card title="Secure your sign-in" icon="user-shield">
+    Protect the account or wallet you use to access Cesto, and turn on two-factor authentication where you can.
+  </Card>
+  <Card title="Keep your credentials private" icon="key">
+    Never share your wallet's seed phrase or private key. Cesto will never ask for it, and no legitimate service will.
   </Card>
   <Card title="Verify the URL" icon="globe">
-    Always make sure you're on app.cesto.co before connecting your wallet.
+    Always make sure you're on app.cesto.co before signing in or connecting a wallet.
   </Card>
-  <Card title="Review before signing" icon="eye">
-    Check transaction details in your wallet before approving. Confirm amounts, assets, and destinations.
-  </Card>
-  <Card title="Use a hardware wallet" icon="lock">
-    For larger positions, a hardware wallet adds an extra layer of security.
+  <Card title="Review before approving" icon="eye">
+    Check the details of any action (amounts, assets, and destinations) before you approve it.
   </Card>
 </CardGroup>

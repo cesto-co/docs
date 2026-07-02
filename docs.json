@@ -32,8 +32,16 @@
           {
             "group": "Using Cesto",
             "pages": [
+              "cesto/funding",
               "cesto/my-portfolio",
               "cesto/rebalancing"
+            ]
+          },
+          {
+            "group": "Community & Creators",
+            "pages": [
+              "cesto/labs",
+              "cesto/creators"
             ]
           },
           {

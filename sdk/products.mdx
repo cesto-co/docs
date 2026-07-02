@@ -48,23 +48,9 @@ product.definition;  // the basket's workflow definition
 ```ts
 const detailed = await cesto.products.get('my-basket-slug', {
   includeBacktestChart: true,
-  chartTimeRange: '1y', // '7d' | '1m' | '3m' | '6m' | '1y' | 'all' — default '1y'
+  chartTimeRange: '1y', // '7d' | '1m' | '3m' | '6m' | '1y' | 'all', default '1y'
 });
 detailed.backtestChart; // chart data, or null on failure
-```
-
-The chart is a union — a portfolio value chart or a prediction-market chart. Discriminate it
-with the shipped type guard:
-
-```ts
-import { isPredictionMarketChart } from '@cesto/sdk';
-
-const chart = detailed.backtestChart;
-if (chart && isPredictionMarketChart(chart)) {
-  chart.markets; // prediction markets
-} else if (chart) {
-  chart.timeSeries; // portfolio value over time
-}
 ```
 
 <ParamField path="includeBacktestChart" type="boolean" default="false">
