@@ -9,7 +9,7 @@
    item, instead of the muted gray mint ships by default.
 
    Scoped to .sidebar-group (the page links — Overview / Usage / Playground)
-   so the top-level section anchors (Documentation / Developers / Plugins /
+   so the top-level section anchors (Documentation / Developers / Widgets /
    Website) keep their own treatment and don't get a heavy green bar on hover. */
 .sidebar-group a:hover {
   color: rgb(74 222 128) !important;
@@ -19,7 +19,7 @@
 }
 
 
-/* Plugin playground page: widen the content column so the embedded playground
+/* Widget playground page: widen the content column so the embedded playground
    and the page text use the available space instead of sitting in the narrow
    reading column. Scoped to the playground page via the .cesto-pg-page marker
    that page renders, so no other page is affected.

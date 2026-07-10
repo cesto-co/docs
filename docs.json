@@ -2,6 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Cesto",
+  "description": "Invest in narrative-driven baskets of assets on Solana. Docs for the Cesto product, the Cesto SDK, the Cesto Toolkit agent skill, and embeddable basket widgets.",
   "colors": {
     "primary": "#16A34A",
     "light": "#16A34A",
@@ -77,21 +78,43 @@
         ]
       },
       {
-        "tab": "Plugins",
-        "icon": "puzzle-piece",
+        "tab": "Widgets",
+        "icon": "shapes",
         "groups": [
           {
-            "group": "Plugins",
+            "group": "Widgets",
             "pages": [
-              "plugins/overview",
-              "plugins/usage",
-              "plugins/playground"
+              "widgets/overview",
+              "widgets/usage",
+              "widgets/playground"
             ]
           }
         ]
       }
     ]
   },
+  "redirects": [
+    {
+      "source": "/plugins",
+      "destination": "/widgets/overview"
+    },
+    {
+      "source": "/plugins/overview",
+      "destination": "/widgets/overview"
+    },
+    {
+      "source": "/plugins/usage",
+      "destination": "/widgets/usage"
+    },
+    {
+      "source": "/plugins/playground",
+      "destination": "/widgets/playground"
+    },
+    {
+      "source": "/plugins/:slug*",
+      "destination": "/widgets/:slug*"
+    }
+  ],
   "logo": {
     "light": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto-logo.svg",
     "dark": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto-logo.svg"
