@@ -116,7 +116,7 @@
     }
   ],
   "logo": {
-    "light": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto-logo.svg",
+    "light": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto-logo-light.svg",
     "dark": "https://res.cloudinary.com/dcyihhgo6/image/upload/cesto-logo.svg"
   },
   "navbar": {
