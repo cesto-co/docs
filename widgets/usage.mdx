@@ -9,7 +9,7 @@ This page is everything you need to embed a widget on your page. The whole integ
 ## The URL
 
 ```
-https://plugin.cesto.co/<widget-name>?basket=<slug>
+https://widget.cesto.co/<widget-name>?basket=<slug>
 ```
 
 `<widget-name>` is one of `hero-card`, `performance`, `overview`, or `pill-row`. `<slug>` is the basket's slug, which is the same value used in `app.cesto.co/product/<slug>`.
@@ -31,7 +31,7 @@ Drop this into any HTML page. Replace `hero-card` and `ai-leaders-portfolio` wit
 
 ```html
 <iframe
-  src="https://plugin.cesto.co/hero-card?basket=ai-leaders-portfolio"
+  src="https://widget.cesto.co/hero-card?basket=ai-leaders-portfolio"
   style="width: 100%; aspect-ratio: 5 / 4; border: 0;"
   loading="lazy"
   title="AI Leaders basket"
@@ -57,7 +57,7 @@ The widget's interior uses CSS container queries, so it scales proportionally wi
 <CodeGroup>
 ```html Responsive (recommended)
 <iframe
-  src="https://plugin.cesto.co/performance?basket=ai-leaders-portfolio"
+  src="https://widget.cesto.co/performance?basket=ai-leaders-portfolio"
   style="width: 100%; aspect-ratio: 15 / 8; border: 0;"
   loading="lazy"
 ></iframe>
@@ -65,7 +65,7 @@ The widget's interior uses CSS container queries, so it scales proportionally wi
 
 ```html Fixed pixel size
 <iframe
-  src="https://plugin.cesto.co/performance?basket=ai-leaders-portfolio"
+  src="https://widget.cesto.co/performance?basket=ai-leaders-portfolio"
   width="900"
   height="480"
   style="border: 0;"
@@ -110,7 +110,7 @@ The simplest way is to add the tokens as query params on the iframe URL, right a
 
 ```html
 <iframe
-  src="https://plugin.cesto.co/overview?basket=ai-leaders-portfolio&accent=%237c7cf0&radius=16&background=transparent"
+  src="https://widget.cesto.co/overview?basket=ai-leaders-portfolio&accent=%237c7cf0&radius=16&background=transparent"
   style="width: 100%; aspect-ratio: 2 / 1; border: 0;"
   loading="lazy"
 ></iframe>
