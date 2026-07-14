@@ -1,33 +1,33 @@
 ---
 title: "Usage"
 icon: "book"
-description: "How to embed a Cesto plugin on your page. One URL, one iframe tag, and the width is yours."
+description: "How to embed a Cesto widget on your page. One URL, one iframe tag, and the width is yours."
 ---
 
-This page is everything you need to embed a plugin on your page. The whole integration is one URL inside an `<iframe>` tag. There is no JavaScript to install and no events to listen for. Pick a plugin, point it at a basket, choose a width, and you are done.
+This page is everything you need to embed a widget on your page. The whole integration is one URL inside an `<iframe>` tag. There is no JavaScript to install and no events to listen for. Pick a widget, point it at a basket, choose a width, and you are done.
 
 ## The URL
 
 ```
-https://plugin.cesto.co/<plugin-name>?basket=<slug>
+https://plugin.cesto.co/<widget-name>?basket=<slug>
 ```
 
-`<plugin-name>` is one of `hero-card`, `performance`, `overview`, or `pill-row`. `<slug>` is the basket's slug, which is the same value used in `app.cesto.co/product/<slug>`.
+`<widget-name>` is one of `hero-card`, `performance`, `overview`, or `pill-row`. `<slug>` is the basket's slug, which is the same value used in `app.cesto.co/product/<slug>`.
 
-## The four plugins
+## The four widgets
 
-| Plugin | `<plugin-name>` | Aspect ratio | Min width |
+| Widget | `<widget-name>` | Aspect ratio | Min width |
 |---|---|---|---|
 | Hero card | `hero-card` | 5 : 4 | 360 px |
 | Performance | `performance` | 15 : 8 | 540 px |
 | Overview | `overview` | 2 : 1 | 480 px |
 | Pill row | `pill-row` | 15 : 2 | 300 px |
 
-Aspect ratio is the recommended shape. Min width is the floor below which the plugin starts shedding affordances (the Invest text collapses to an arrow, allocation pills hide, and so on). The plugin still paints below that floor, it just simplifies.
+Aspect ratio is the recommended shape. Min width is the floor below which the widget starts shedding affordances (the Invest text collapses to an arrow, allocation pills hide, and so on). The widget still paints below that floor, it just simplifies.
 
 ## Embed snippet
 
-Drop this into any HTML page. Replace `hero-card` and `ai-leaders-portfolio` with the plugin and basket slug you want.
+Drop this into any HTML page. Replace `hero-card` and `ai-leaders-portfolio` with the widget and basket slug you want.
 
 ```html
 <iframe
@@ -38,7 +38,7 @@ Drop this into any HTML page. Replace `hero-card` and `ai-leaders-portfolio` wit
 ></iframe>
 ```
 
-That is the entire integration. The plugin fetches its own data, renders the basket, and opens `app.cesto.co/product/<slug>` in a new tab when the user taps Invest.
+That is the entire integration. The widget fetches its own data, renders the basket, and opens `app.cesto.co/product/<slug>` in a new tab when the user taps Invest.
 
 ## Finding a basket slug
 
@@ -52,7 +52,7 @@ In the URL above, the slug is the final segment: `ai-leaders-portfolio`. You can
 
 ## Sizing
 
-The plugin's interior uses CSS container queries, so it scales proportionally with whatever pixel width its parent column gives it. The recommended pattern is `width: 100%` plus `aspect-ratio`, letting the page decide width and letting the aspect ratio decide height.
+The widget's interior uses CSS container queries, so it scales proportionally with whatever pixel width its parent column gives it. The recommended pattern is `width: 100%` plus `aspect-ratio`, letting the page decide width and letting the aspect ratio decide height.
 
 <CodeGroup>
 ```html Responsive (recommended)
@@ -76,13 +76,13 @@ The plugin's interior uses CSS container queries, so it scales proportionally wi
 
 A few tips:
 
-- Keep `width: 100%` whenever possible and let the host column drive the width. The plugin will reflow itself.
-- Use `loading="lazy"` for plugins below the fold so the iframe defers until it scrolls into view.
-- The plugin host sets `X-Frame-Options: ALLOWALL` and `frame-ancestors *`, so any origin can embed it.
+- Keep `width: 100%` whenever possible and let the host column drive the width. The widget will reflow itself.
+- Use `loading="lazy"` for widgets below the fold so the iframe defers until it scrolls into view.
+- The widget host sets `X-Frame-Options: ALLOWALL` and `frame-ancestors *`, so any origin can embed it.
 
 ## Theming
 
-By default, every plugin renders Cesto's canonical dark theme, so it looks consistent wherever it's embedded. If you want it to match your own site, you can override individual design tokens: colors, corner radius, fonts, and spacing.
+By default, every widget renders Cesto's canonical dark theme, so it looks consistent wherever it's embedded. If you want it to match your own site, you can override individual design tokens: colors, corner radius, fonts, and spacing.
 
 ### Theme fields
 
@@ -101,7 +101,7 @@ Every field is optional. Pass any subset; anything you don't set keeps the Cesto
 | `maxWidth` | `none` or length | Cap on content width |
 
 <Note>
-A bad value can't break a plugin. Each field is validated on its own: an invalid value (say, `accent=notacolor`) is dropped and falls back to the Cesto default, and unknown params are ignored.
+A bad value can't break a widget. Each field is validated on its own: an invalid value (say, `accent=notacolor`) is dropped and falls back to the Cesto default, and unknown params are ignored.
 </Note>
 
 ### Setting a theme
@@ -117,7 +117,7 @@ The simplest way is to add the tokens as query params on the iframe URL, right a
 ```
 
 <Tip>
-A plugin's body is transparent by default, so it blends into your page background. Set `background` explicitly if you want it to fill with its own color.
+A widget's body is transparent by default, so it blends into your page background. Set `background` explicitly if you want it to fill with its own color.
 </Tip>
 
 ### Live theming (optional)
@@ -138,14 +138,14 @@ You can match your host's look by reading your own design tokens off the page an
 
 ## What stays fixed
 
-Theming covers look, not content. A plugin's copy, its data, and the Invest destination (`app.cesto.co/product/<slug>`) are fixed and stay consistent with the rest of the Cesto product.
+Theming covers look, not content. A widget's copy, its data, and the Invest destination (`app.cesto.co/product/<slug>`) are fixed and stay consistent with the rest of the Cesto product.
 
-If you need anything beyond a themeable basket card on your page, that is a different surface and not a plugin.
+If you need anything beyond a themeable basket card on your page, that is a different surface and not a widget.
 
 ## Next
 
 <CardGroup cols={1}>
-  <Card title="Open the playground" icon="circle-play" href="/plugins/playground">
-    Try every plugin against any live basket, right inside the docs.
+  <Card title="Open the playground" icon="circle-play" href="/widgets/playground">
+    Try every widget against any live basket, right inside the docs.
   </Card>
 </CardGroup>

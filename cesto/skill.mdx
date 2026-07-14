@@ -27,31 +27,29 @@ Create basket posts on Cesto Labs, simulate portfolio performance against the S&
 
 ## Installation
 
-The skill lives at [`cesto-co/cesto-skills`](https://github.com/cesto-co/cesto-skills) on GitHub.
+The skill lives at [`cesto-co/cesto-skills`](https://github.com/cesto-co/cesto-skills) on GitHub. Install it into any agent with a single command using the [Skills CLI](https://github.com/vercel-labs/skills) — there are no config files to edit by hand.
+
+<Card title="Add to Claude Code" icon="terminal" horizontal>
+Paste this into your terminal and the Cesto Toolkit is ready:
+
+```bash
+npx skills add cesto-co/cesto-skills --skill cesto-toolkit
+```
+</Card>
+
+The same one line works across Claude Code, Cursor, Codex, Windsurf, and 60+ other agents. A few common variants:
 
 <CodeGroup>
-```json Claude Code (.claude/settings.json)
-{
-  "skills": [
-    "github:cesto-co/cesto-skills/cesto-toolkit"
-  ]
-}
+```bash Current project
+npx skills add cesto-co/cesto-skills --skill cesto-toolkit
 ```
 
-```json Cursor (.cursor/skills.json)
-{
-  "skills": [
-    "github:cesto-co/cesto-skills/cesto-toolkit"
-  ]
-}
+```bash Every project (global)
+npx skills add cesto-co/cesto-skills --skill cesto-toolkit --global
 ```
 
-```json Windsurf (.windsurf/skills.json)
-{
-  "skills": [
-    "github:cesto-co/cesto-skills/cesto-toolkit"
-  ]
-}
+```bash A specific agent
+npx skills add cesto-co/cesto-skills --skill cesto-toolkit --agent claude-code
 ```
 </CodeGroup>
 
