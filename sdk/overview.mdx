@@ -1,25 +1,26 @@
 ---
 title: "Cesto SDK"
 icon: "code"
-description: "A typed, server-side TypeScript client for Cesto's read-only API: baskets and positions."
+description: "A typed, server-side TypeScript client for the Cesto API: baskets, positions, and client-signed open/close."
 ---
 
-The **Cesto SDK** (`@cesto/sdk`) is a typed TypeScript client for Cesto's read-only API.
-Use it to list and inspect baskets (products) and to look up a user's positions by their
-Solana wallet, all behind a single API key.
+The **Cesto SDK** (`@cesto/sdk`) is a typed TypeScript client for the Cesto API.
+Use it to list and inspect baskets (products), look up a user's positions by their
+Solana wallet, and open or close positions with client-signed transactions — all behind a
+single API key.
 
 <CardGroup cols={2}>
   <Card title="Products" icon="basket-shopping">
     List baskets and fetch full basket detail, optionally with backtested performance and charts.
   </Card>
   <Card title="Positions" icon="wallet">
-    Read a user's open and closing positions by their external Solana wallet address.
+    Read a user's positions by wallet, and live per-basket holdings for SDK positions.
   </Card>
-  <Card title="Fully typed" icon="code">
-    Every method and response is typed. Ships ESM + CommonJS with bundled type definitions.
+  <Card title="Open & Close" icon="right-left">
+    Open and close positions where the user's wallet signs its own transactions — Cesto never holds the key.
   </Card>
-  <Card title="Resilient" icon="shield-check">
-    Automatic retries with backoff, request timeouts, and a typed error hierarchy out of the box.
+  <Card title="Typed & resilient" icon="shield-check">
+    Every method and response is typed (ESM + CJS), with automatic retries, timeouts, and a typed error hierarchy.
   </Card>
 </CardGroup>
 
@@ -63,8 +64,14 @@ const products = await cesto.products.list();
 const product = await cesto.products.get('my-basket-slug');
 
 // Look up positions by external Solana wallet
-const { positions } = await cesto.positions.list({
-  wallet: 'EXTERNAL_SOLANA_ADDRESS',
+const { positions } = await cesto.positions.getPositions({
+  user: 'EXTERNAL_SOLANA_ADDRESS',
+});
+
+// Live position in one basket (the position view for SDK-opened positions)
+const position = await cesto.positions.getPosition({
+  user: 'EXTERNAL_SOLANA_ADDRESS',
+  slug: 'defi-blue-chip',
 });
 ```
 
@@ -86,5 +93,14 @@ const { positions } = await cesto.positions.list({
   </Card>
   <Card title="Positions" icon="wallet" href="/sdk/positions">
     Positions by wallet.
+  </Card>
+  <Card title="Open a Position" icon="circle-plus" href="/sdk/open-position">
+    Open positions with client-signed transactions.
+  </Card>
+  <Card title="Close a Position" icon="circle-minus" href="/sdk/close-position">
+    Close a wallet's full basket holding.
+  </Card>
+  <Card title="Examples" icon="flask" href="/sdk/examples">
+    Runnable Node.js examples for every feature.
   </Card>
 </CardGroup>

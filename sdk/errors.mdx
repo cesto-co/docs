@@ -53,6 +53,12 @@ Transient failures (408, 409, 429, 5xx, connection errors, and timeouts) are ret
 exponential backoff and jitter, honoring the `Retry-After` header. Tune with `maxRetries`
 (default `2`), or disable per request with `{ maxRetries: 0 }`.
 
+<Note>
+  One exception: [`positions.submit`](/sdk/open-position#method-reference) is **never
+  retried automatically** — a submit that timed out client-side may still have been
+  accepted, so poll `getExecution` instead of re-sending.
+</Note>
+
 ## Timeouts & cancellation
 
 Each request times out after `timeout` ms (default 60s), throwing `APIConnectionTimeoutError`.

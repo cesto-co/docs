@@ -33,6 +33,19 @@ const cesto = new Cesto();
 
 If no key is found, the constructor throws.
 
+## Key scopes
+
+Keys are **read** (default) or **write**-scoped:
+
+- **Read** covers products and position reads (`products.*`, `positions.getPositions`,
+  `positions.getPosition`).
+- **Write** is required for [opening](/sdk/open-position) and
+  [closing](/sdk/close-position) positions
+  (`open.*`, `close.*`, `positions.submit`, execution polling). A read-only key gets a
+  `403 PermissionDeniedError` on write routes.
+
+Ask for the scope you need when requesting a key.
+
 ## Backend
 
 The SDK always targets the Cesto production backend at `https://backend.cesto.co`. There's
