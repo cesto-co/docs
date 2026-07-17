@@ -1,0 +1,207 @@
+---
+title: "Open a Position"
+icon: "circle-plus"
+description: "Open a basket position with client-signed transactions."
+---
+
+The SDK opens positions where the end-user's wallet **signs its own transactions**. Cesto
+builds the exact unsigned transactions, the wallet signs them, and Cesto verifies and lands
+them — Cesto never holds the user's key.
+
+The flow is **prepare → sign → submit → poll**:
+
+```
+1. prepare   your server ─▶ Cesto     Cesto builds all unsigned txs → { executionId, transactions, expiresAt }
+2. sign      user's wallet            the wallet signs each transaction locally (Phantom / Solflare / keypair)
+3. submit    your server ─▶ Cesto     Cesto byte-verifies ownership + integrity, then lands the transactions
+4. poll      your server ─▶ Cesto     poll the execution until COMPLETED / PARTIALLY_COMPLETED / FAILED
+```
+
+<Warning>
+  Opening requires a **write-scoped** API key (read-only keys get a `403` on write routes),
+  and the user's wallet **pays its own gas** — it must hold some SOL. Cesto does not
+  sponsor gas for SDK positions.
+</Warning>
+
+There is no separate ownership challenge: **the signatures are the ownership proof**.
+Prepare only needs the wallet *address*.
+
+## One-call flow (you hold the keypair)
+
+When your backend controls the signing keypair — bots, agents, services you custody —
+`open.execute` runs the whole flow in one call. You supply a `signTransactions` callback,
+so the SDK never touches the private key:
+
+```ts
+import { Cesto } from '@cesto/sdk';
+import { Keypair, VersionedTransaction } from '@solana/web3.js';
+
+const cesto = new Cesto({ apiKey: process.env.CESTO_API_KEY }); // write-scoped key
+
+const keypair = Keypair.fromSecretKey(secret); // a wallet YOU control, funded with SOL
+const wallet = keypair.publicKey.toBase58();
+
+// Receives every prepared transaction; returns them signed, base64-encoded.
+const signTransactions = async (transactions) =>
+  transactions.map(({ nodeId, transaction }) => {
+    const vtx = VersionedTransaction.deserialize(Buffer.from(transaction, 'base64'));
+    vtx.sign([keypair]);
+    return { nodeId, signedTransaction: Buffer.from(vtx.serialize()).toString('base64') };
+  });
+
+const result = await cesto.open.execute({
+  user: wallet,
+  slug: 'defi-blue-chip',
+  amount: 100_000_000n, // input base units (e.g. 100 USDC @ 6 decimals)
+  signTransactions,
+});
+result.status;       // 'COMPLETED' | 'PARTIALLY_COMPLETED' | 'FAILED'
+result.transactions; // per-leg { nodeId, ok, signature?, error? }
+```
+
+## Split flow (browser wallet signs)
+
+In a web app the SDK runs on **your backend**, but the signatures come from the user's
+wallet in the **browser**. Use the lower-level methods and hop between the two:
+
+<Steps>
+  <Step title="Backend: prepare">
+    Cesto builds the unsigned transactions and retains the canonical bytes for **~60 seconds**.
+
+    ```ts
+    const prepared = await cesto.open.prepare({
+      user: userWalletAddress,
+      slug: 'defi-blue-chip',
+      amount: 100_000_000n,
+    });
+    // { executionId, transactions: [{ nodeId, transaction }], expiresAt }
+    ```
+
+    Send `prepared.transactions` to the browser immediately — the set expires ~60s after
+    prepare. Slippage uses the platform default; there is no slippage parameter.
+  </Step>
+  <Step title="Browser: the user signs">
+    Sign the transactions **as-is** — any modified byte is rejected at submit.
+
+    ```ts
+    import { VersionedTransaction } from '@solana/web3.js';
+
+    const signed = await Promise.all(
+      prepared.transactions.map(async ({ nodeId, transaction }) => {
+        const tx = VersionedTransaction.deserialize(Buffer.from(transaction, 'base64'));
+        const signedTx = await wallet.signTransaction(tx); // wallet-adapter
+        return { nodeId, signedTransaction: Buffer.from(signedTx.serialize()).toString('base64') };
+      }),
+    );
+    // POST { executionId, transactions: signed } back to your backend
+    ```
+  </Step>
+  <Step title="Backend: submit and wait">
+    ```ts
+    await cesto.positions.submit({
+      executionId: prepared.executionId,
+      transactions: signed,
+    });
+
+    const result = await cesto.positions.waitForExecution(prepared.executionId, {
+      timeoutMs: 120_000,
+    });
+    ```
+  </Step>
+</Steps>
+
+## Method reference
+
+### `open.prepare(params)`
+
+<ParamField path="user" type="string" required>
+  Solana address of the wallet opening the position — it signs and pays for every transaction.
+</ParamField>
+<ParamField path="slug" type="string" required>
+  Basket to open, by slug (a product id also works).
+</ParamField>
+<ParamField path="amount" type="bigint" required>
+  Amount to invest, in input-token base units. Serialized as a decimal string on the wire.
+</ParamField>
+
+Returns `{ executionId, transactions, expiresAt }`.
+
+### `positions.submit(params)`
+
+<ParamField path="executionId" type="string" required>
+  Execution from the prepare response.
+</ParamField>
+<ParamField path="transactions" type="{ nodeId, signedTransaction }[]" required>
+  Every prepared transaction, signed by the wallet (base64).
+</ParamField>
+
+<Note>
+  `submit` is **single-use and never retried automatically**. If it times out client-side
+  it may still have been accepted — poll `getExecution` instead of re-sending. An expired
+  (~60s), replaced, or already-submitted preparation fails with a `409`; run prepare again.
+</Note>
+
+### `positions.getExecution(executionId)` / `positions.waitForExecution(executionId, options?)`
+
+`getExecution` fetches the current status with per-transaction outcomes. `waitForExecution`
+polls it until a terminal status and throws a `CestoError` on timeout (the execution keeps
+running server-side).
+
+<ParamField path="pollIntervalMs" type="number" default="2500">
+  Delay between status polls.
+</ParamField>
+<ParamField path="timeoutMs" type="number" default="180000">
+  Max total wait before throwing.
+</ParamField>
+
+## Execution results
+
+Terminal statuses are `COMPLETED`, `PARTIALLY_COMPLETED`, and `FAILED`.
+
+<Warning>
+  **Partial completion is real.** A multi-token open is several independent transactions
+  with no atomicity across them. If a leg fails, the execution ends `PARTIALLY_COMPLETED`
+  and `result.transactions` shows exactly which legs landed (with signatures) and which
+  failed. What to do next is your call: retry the open for the remainder, or
+  [close](/sdk/close-position) what landed.
+</Warning>
+
+To read the resulting position, use
+[`positions.getPosition`](/sdk/positions#position-by-product-sdk-positions) — SDK positions
+are self-custody and do **not** appear in `positions.getPositions`.
+
+## Common errors
+
+| Situation | What you get |
+| --- | --- |
+| Read-only key on a write route | `403 PermissionDeniedError` |
+| Prepared txs older than ~60s / already submitted / replaced | `409 ConflictError` at submit → re-`prepare` |
+| Submitted tx bytes altered vs prepared | `400` — only signatures may be added |
+| Signed by a different wallet than prepared for | `400` — the wallet's signature must verify |
+| Another execution in flight for this wallet + product | conflict at prepare/submit |
+| Wallet has no SOL for gas / insufficient funds | leg fails at landing → `FAILED` / `PARTIALLY_COMPLETED` |
+| `submit` timed out client-side | do **not** re-send; poll `getExecution` |
+
+## Security model
+
+- **Ownership proof = the signatures.** Only the wallet holder can produce a valid
+  signature over the prepared message bytes; prepare takes the address only and creates
+  nothing durable.
+- **Tamper-proof submit.** Cesto keeps the canonical unsigned transactions it built. On
+  submit, each transaction's message bytes must be **byte-identical** — only signatures may
+  be added. Any changed instruction, account, or fee payer is rejected.
+- **Single-use, short-lived preparations.** One submit per prepare, ~60s expiry, and a new
+  prepare for the same wallet + product replaces the previous one.
+- **Quotes locked at prepare.** The swap quote is baked into the prepared transaction;
+  slippage tolerance protects against drift between prepare and submit.
+
+## Constraints
+
+- **Open and close only** — no rebalance via the SDK.
+- **Swap-only baskets** (one or more tokens). No prediction markets, lending, or perps.
+- **One in-flight execution** per wallet + product.
+- **User pays gas** — the wallet must hold SOL.
+
+## Closing
+
+Closing is symmetric — see [Close a Position](/sdk/close-position).

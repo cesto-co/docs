@@ -72,7 +72,10 @@
               "sdk/configuration",
               "sdk/products",
               "sdk/positions",
-              "sdk/errors"
+              "sdk/open-position",
+              "sdk/close-position",
+              "sdk/errors",
+              "sdk/examples"
             ]
           }
         ]

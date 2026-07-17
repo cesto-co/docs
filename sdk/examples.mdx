@@ -1,0 +1,40 @@
+---
+title: "Examples"
+icon: "flask"
+description: "Runnable TypeScript examples covering the whole SDK surface."
+---
+
+The [**cesto-sdk-examples**](https://github.com/cesto-co/cesto-sdk-examples) repository is a
+small TypeScript app with one runnable script per SDK feature (via [tsx](https://tsx.is),
+no build step) — clone it, add your API key, and run any example:
+
+```bash
+git clone https://github.com/cesto-co/cesto-sdk-examples
+cd cesto-sdk-examples
+npm install
+cp .env.example .env   # add your CESTO_API_KEY (and wallet vars for the write examples)
+
+npm run products
+```
+
+Requires **Node.js 20.6+**.
+
+## What's included
+
+| Example | Run | Docs |
+| --- | --- | --- |
+| List products (+ backtests) | `npm run products` | [Products](/sdk/products) |
+| Product detail + chart | `npm run product` | [Products](/sdk/products) |
+| Positions by wallet | `npm run positions` | [Positions](/sdk/positions) |
+| Live position in one basket | `npm run position` | [Positions](/sdk/positions) |
+| Open a position (one call) | `npm run open -- --yes` | [Open a Position](/sdk/open-position) |
+| Close a position (one call) | `npm run close -- --yes` | [Close a Position](/sdk/close-position) |
+| Explicit prepare → sign → submit → poll | `npm run split-flow -- --yes` | [Open a Position](/sdk/open-position#split-flow-browser-wallet-signs) |
+| Typed errors, overrides, cancellation | `npm run errors` | [Errors & Retries](/sdk/errors) |
+
+<Warning>
+  The open / close / split-flow examples execute **real swaps on Solana mainnet** from the
+  wallet you configure, and that wallet pays its own gas. They refuse to run without an
+  explicit `--yes` flag — use a dedicated test wallet with small amounts, and a
+  **write-scoped** API key (see [Authentication](/sdk/authentication)).
+</Warning>
