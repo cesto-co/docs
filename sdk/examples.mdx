@@ -11,10 +11,10 @@ no build step) — clone it, add your API key, and run any example:
 ```bash
 git clone https://github.com/cesto-co/cesto-sdk-examples
 cd cesto-sdk-examples
-npm install
+pnpm install
 cp .env.example .env   # add your CESTO_API_KEY (and wallet vars for the write examples)
 
-npm run products
+pnpm products
 ```
 
 Requires **Node.js 20.6+**.
@@ -23,14 +23,14 @@ Requires **Node.js 20.6+**.
 
 | Example | Run | Docs |
 | --- | --- | --- |
-| List products (+ backtests) | `npm run products` | [Products](/sdk/products) |
-| Product detail + chart | `npm run product` | [Products](/sdk/products) |
-| Positions by wallet | `npm run positions` | [Positions](/sdk/positions) |
-| Live position in one basket | `npm run position` | [Positions](/sdk/positions) |
-| Open a position (one call) | `npm run open -- --yes` | [Open a Position](/sdk/open-position) |
-| Close a position (one call) | `npm run close -- --yes` | [Close a Position](/sdk/close-position) |
-| Explicit prepare → sign → submit → poll | `npm run split-flow -- --yes` | [Open a Position](/sdk/open-position#split-flow-browser-wallet-signs) |
-| Typed errors, overrides, cancellation | `npm run errors` | [Errors & Retries](/sdk/errors) |
+| List products (+ backtests) | `pnpm products` | [Products](/sdk/products) |
+| Product detail + chart | `pnpm product` | [Products](/sdk/products) |
+| Positions by wallet | `pnpm positions` | [Positions](/sdk/positions) |
+| Live position in one basket | `pnpm position` | [Positions](/sdk/positions) |
+| Open a position (one call) | `pnpm open --yes` | [Open a Position](/sdk/open-position) |
+| Close a position (one call) | `pnpm close --yes` | [Close a Position](/sdk/close-position) |
+| Explicit prepare → sign → submit → poll | `pnpm split-flow --yes` | [Open a Position](/sdk/open-position#split-flow-browser-wallet-signs) |
+| Typed errors, overrides, cancellation | `pnpm errors` | [Errors & Retries](/sdk/errors) |
 
 <Warning>
   The open / close / split-flow examples execute **real swaps on Solana mainnet** from the
