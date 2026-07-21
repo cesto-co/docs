@@ -1,13 +1,13 @@
 ---
 title: "Cesto SDK"
 icon: "code"
-description: "A typed, server-side TypeScript client for the Cesto API: baskets, positions, and client-signed open/close."
+description: "A typed, server-side TypeScript client for the Cesto API: baskets, positions, and client-signed open / close / rebalance."
 ---
 
 The **Cesto SDK** (`@cesto/sdk`) is a typed TypeScript client for the Cesto API.
 Use it to list and inspect baskets (products), look up a user's positions by their
-Solana wallet, and open or close positions with client-signed transactions — all behind a
-single API key.
+Solana wallet, and open, close, or rebalance positions with client-signed transactions —
+all behind a single API key.
 
 <CardGroup cols={2}>
   <Card title="Products" icon="basket-shopping">
@@ -16,8 +16,8 @@ single API key.
   <Card title="Positions" icon="wallet">
     Read a user's positions by wallet, and live per-basket holdings for SDK positions.
   </Card>
-  <Card title="Open & Close" icon="right-left">
-    Open and close positions where the user's wallet signs its own transactions — Cesto never holds the key.
+  <Card title="Open, Close & Rebalance" icon="right-left">
+    Open, close, and rebalance positions where the user's wallet signs its own transactions — Cesto never holds the key.
   </Card>
   <Card title="Typed & resilient" icon="shield-check">
     Every method and response is typed (ESM + CJS), with automatic retries, timeouts, and a typed error hierarchy.
@@ -79,9 +79,18 @@ const position = await cesto.positions.getPosition({
   You need an API key to use the SDK. See [Authentication](/sdk/authentication) to request one.
 </Note>
 
+<Note>
+  Integrating for partner users? [Integration Models](/sdk/integration-models) covers the
+  wallet setups — Cesto-managed Privy, your own Privy, browser EOAs (Phantom / Solflare), and
+  cross-chain EVM funding — so you can pick the path that fits your users.
+</Note>
+
 ## Next steps
 
 <CardGroup cols={2}>
+  <Card title="Integration Models" icon="sitemap" href="/sdk/integration-models">
+    Choose a wallet model: managed Privy, your own Privy, EOAs, or cross-chain.
+  </Card>
   <Card title="Authentication" icon="key" href="/sdk/authentication">
     Get a key and start making requests.
   </Card>
@@ -99,6 +108,9 @@ const position = await cesto.positions.getPosition({
   </Card>
   <Card title="Close a Position" icon="circle-minus" href="/sdk/close-position">
     Close a wallet's full basket holding.
+  </Card>
+  <Card title="Rebalance a Position" icon="arrows-rotate" href="/sdk/rebalance-position">
+    Migrate a position to the basket's latest version.
   </Card>
   <Card title="Examples" icon="flask" href="/sdk/examples">
     Runnable Node.js examples for every feature.

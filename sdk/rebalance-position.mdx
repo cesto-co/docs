@@ -1,0 +1,254 @@
+---
+title: "Rebalance a Position"
+icon: "arrows-rotate"
+description: "Migrate a wallet's position to the basket's latest version with client-signed transactions."
+---
+
+Baskets are **versioned** — a creator can publish a new version that changes the token mix.
+Rebalancing moves a wallet's position from the version it currently holds to the basket's
+**latest version**, selling the old tokens and buying the new ones. Like open and close, it
+is **self-custody**: the user's wallet signs every transaction and Cesto never holds the key.
+
+Rebalance is unavoidably a **two-round** flow, because the buy leg's USDC input can only be
+known **after** the sells land on chain. You drive it with a single phase-aware `prepare`
+that you call repeatedly:
+
+```
+sell round   prepare → { phase: 'sell', transactions }  → sign → submit → sells land on chain
+buy round    prepare → { phase: 'buy',  transactions }  → sign → submit → buys land on chain
+done         prepare → { phase: 'done' }                → the position now tracks the new version
+```
+
+<Note>
+  The **buy round is funded only by the sell proceeds** — it will never spend the wallet's
+  idle USDC. Cesto sizes each buy from the exact USDC the sells produced.
+</Note>
+
+<Warning>
+  Rebalancing requires a **write-scoped** API key. It follows the same signing and gas model
+  as [opening](/sdk/open-position) — the wallet signs every leg, one round at a time.
+</Warning>
+
+## One-call flow (you hold the keypair)
+
+When your backend controls the signing keypair, `rebalance.execute` runs the **entire loop** —
+every round's prepare → sign → submit → wait — until the server reports `phase: 'done'`. You
+supply a `signTransactions` callback, so the SDK never touches the private key.
+
+```ts
+import { Cesto, signWithKeypair } from '@cesto/sdk';
+import { Keypair } from '@solana/web3.js';
+
+const cesto = new Cesto({ apiKey: process.env.CESTO_API_KEY }); // write-scoped key
+
+const keypair = Keypair.fromSecretKey(secret); // a wallet YOU control
+const wallet = keypair.publicKey.toBase58();
+
+const result = await cesto.rebalance.execute({
+  user: wallet,
+  slug: 'defi-blue-chip',
+  signTransactions: signWithKeypair(keypair), // signs each round's legs locally
+});
+result.status;       // terminal status of the final round
+result.transactions; // per-leg { nodeId, ok, signature?, error? }
+```
+
+<Note>
+  `execute` returns the **last round's** execution. It stops early and returns if a round
+  ends `FAILED`, and throws a `CestoError` if the rounds never converge (safety cap of 6
+  rounds). Check availability first if you want to know whether there's anything to do.
+</Note>
+
+## Split flow (browser wallet signs)
+
+In a web app the SDK runs on your backend and the signatures come from the user's wallet in
+the browser. Loop over the phase-aware `prepare` yourself, hopping to the browser to sign
+each round:
+
+<Steps>
+  <Step title="Backend: prepare the next round">
+    ```ts
+    const prepared = await cesto.rebalance.prepare({
+      user: userWalletAddress,
+      slug: 'defi-blue-chip',
+    });
+    // { phase: 'sell' | 'buy' | 'done', executionId, transactions, expiresAt }
+
+    if (prepared.phase === 'done') {
+      // Nothing left to rebalance — the position is on the latest version. Stop.
+    }
+    ```
+
+    Send `prepared.transactions` to the browser immediately — the set expires ~60s after
+    prepare.
+  </Step>
+  <Step title="Browser: the user signs">
+    Sign the transactions **as-is** — any modified byte is rejected at submit.
+
+    ```ts
+    import { VersionedTransaction } from '@solana/web3.js';
+
+    const signed = await Promise.all(
+      prepared.transactions.map(async ({ nodeId, transaction }) => {
+        const tx = VersionedTransaction.deserialize(Buffer.from(transaction, 'base64'));
+        const signedTx = await wallet.signTransaction(tx); // wallet-adapter
+        return { nodeId, signedTransaction: Buffer.from(signedTx.serialize()).toString('base64') };
+      }),
+    );
+    // POST { executionId, transactions: signed } back to your backend
+    ```
+  </Step>
+  <Step title="Backend: submit and wait for the round">
+    ```ts
+    await cesto.positions.submit({
+      executionId: prepared.executionId,
+      transactions: signed,
+    });
+
+    // waitForRound returns when THIS round lands — including the sell round's
+    // AWAITING_SUBMISSION pause between sell and buy.
+    await cesto.rebalance.waitForRound(prepared.executionId, { timeoutMs: 120_000 });
+    ```
+  </Step>
+  <Step title="Loop until done">
+    Go back to step 1 and `prepare` again. The server advances the phase (`sell` → `buy`)
+    and finally returns `phase: 'done'` once the position tracks the new version.
+  </Step>
+</Steps>
+
+## Previewing a rebalance
+
+`rebalance.getAvailability` is a **read** (works with a read-only key). Use it to show the
+user what a rebalance would do before they commit — the target version, the tokens to sell
+and buy, and whether they're eligible.
+
+```ts
+const availability = await cesto.rebalance.getAvailability({
+  user: userWalletAddress,
+  slug: 'defi-blue-chip',
+});
+
+if (availability.available && availability.eligible) {
+  // availability.currentVersionLabel → availability.targetVersionLabel  (e.g. "v5" → "v6")
+  // availability.tokensToSell / tokensToBuy → per-token allocation diffs + estimated USD
+}
+```
+
+When `available` is `false`, `reason` explains why (e.g. `no_positions`, `no_newer_version`,
+`rebalance_in_progress`). When `eligible` is `false`, `eligibilityErrors` lists the blockers
+(and `ineligibleReason` is populated when the invested amount is below the new version's
+minimum).
+
+## Rebalance history
+
+`rebalance.getHistory` lists the wallet's past rebalances of the basket — each version move,
+the swaps, fees, and on-chain signatures.
+
+```ts
+const { history } = await cesto.rebalance.getHistory({
+  user: userWalletAddress,
+  slug: 'defi-blue-chip',
+});
+// history[0] → { fromVersion, toVersion, status, swapDetails, tokensSold, tokensBought,
+//                signatures, totalFees, startedAt, completedAt, ... }
+```
+
+## Method reference
+
+### `rebalance.getAvailability(params)`
+
+<ParamField path="user" type="string" required>
+  Solana address of the wallet whose position would be rebalanced.
+</ParamField>
+<ParamField path="slug" type="string" required>
+  Basket to rebalance, by slug (a product id also works).
+</ParamField>
+
+Returns the availability preview: `{ available, reason?, currentVersionId?, targetVersionId?,
+currentVersionLabel?, targetVersionLabel?, tokensToSell, tokensToBuy, tokensUnchanged,
+positions, totalInvested, estimatedPlatformFee, eligible, eligibilityErrors?, ineligibleReason? }`.
+
+### `rebalance.prepare(params)`
+
+<ParamField path="user" type="string" required>
+  Solana address of the wallet rebalancing — it signs and pays for every transaction.
+</ParamField>
+<ParamField path="slug" type="string" required>
+  Basket to rebalance, by slug (a product id also works).
+</ParamField>
+
+Returns `{ phase, executionId, transactions, expiresAt }`. `phase` is `'sell'`, `'buy'`, or
+`'done'`. When `phase` is `'done'`, `transactions` is empty and `executionId` may be `null`.
+The whole rebalance is **one** `executionId` reused across both rounds.
+
+### `rebalance.execute(params)`
+
+<ParamField path="user" type="string" required>
+  Solana address of the wallet rebalancing.
+</ParamField>
+<ParamField path="slug" type="string" required>
+  Basket to rebalance, by slug (a product id also works).
+</ParamField>
+<ParamField path="signTransactions" type="(transactions) => Promise<SignedTransactionInput[]>" required>
+  Callback that signs each round's prepared legs and returns one `{ nodeId, signedTransaction }`
+  per leg. Use `signWithKeypair(keypair)` when you hold the key.
+</ParamField>
+
+Runs the full loop and returns the final round's execution.
+
+### `rebalance.waitForRound(executionId, options?)`
+
+Polls until the **current round** reaches a round-terminal status — including the sell
+round's `AWAITING_SUBMISSION` pause (see below). Same options as
+[`positions.waitForExecution`](/sdk/open-position#method-reference).
+
+### `rebalance.getHistory(params)`
+
+Same `{ user, slug }` params. Returns `{ history }` — the wallet's past rebalances of the basket.
+
+## Round statuses
+
+Submit and status polling reuse the shared
+[`positions.submit`](/sdk/open-position#method-reference) /
+[`positions.getExecution`](/sdk/open-position#method-reference)
+routes. Rebalance adds one status:
+
+| Status | Meaning |
+| --- | --- |
+| `AWAITING_SUBMISSION` | The **sell round landed**; the execution is paused waiting for you to prepare + submit the **buy round**. `waitForRound` treats this as terminal so the loop advances. |
+| `COMPLETED` | The **buy round landed** — the position now tracks the new version. |
+| `PARTIALLY_COMPLETED` | Some legs of a round landed, some didn't. Prepare again to re-drive only the un-landed legs. |
+| `FAILED` | The round failed. A sell round that landed **nothing** rolls back cleanly (the position is untouched). |
+
+<Warning>
+  **Partial rounds are real and there is no server-side revert.** If a round ends
+  `PARTIALLY_COMPLETED`, simply `prepare` again — Cesto re-reads on-chain state and rebuilds
+  only the legs that haven't landed, re-sizing the buys from the realised USDC. Keep looping
+  until `phase: 'done'`.
+</Warning>
+
+## Common errors
+
+| Situation | What you get |
+| --- | --- |
+| Read-only key on `prepare` | `403 PermissionDeniedError` |
+| Nothing to rebalance (already on latest version, or no position) | `prepare` returns `phase: 'done'` (not an error) |
+| Prepared txs older than ~60s / already submitted / replaced | `409 ConflictError` at submit → re-`prepare` |
+| Submitted tx bytes altered vs prepared | `400` — only signatures may be added |
+| Another open/close/rebalance in flight for this wallet + product | conflict at prepare/submit |
+| A round times out client-side | do **not** re-send; poll `getExecution`, then `prepare` again |
+
+## Constraints
+
+- **Swap-only baskets.** No prediction markets, lending, or perps.
+- **Needs a position on an older version** and a **newer version published** for the basket —
+  otherwise `getAvailability` returns `available: false` and `prepare` returns `phase: 'done'`.
+- **Buys are funded by sell proceeds only** — idle wallet USDC is never spent.
+- **One in-flight execution** per wallet + product. A mid-rebalance (paused at
+  `AWAITING_SUBMISSION`) blocks a new open/close until the buy round completes.
+
+## Related
+
+- [Open a Position](/sdk/open-position) — the client-signed model, gas, and `signWithKeypair`.
+- [Close a Position](/sdk/close-position) — sell the wallet's full basket holding.
+- [Positions](/sdk/positions) — read a wallet's live per-basket holdings.

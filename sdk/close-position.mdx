@@ -21,17 +21,19 @@ Closing follows the same client-signed **prepare → sign → submit → poll** 
 ## One-call flow (you hold the keypair)
 
 ```ts
+import { signWithKeypair } from '@cesto/sdk';
+
 const result = await cesto.close.execute({
   user: wallet,
   slug: 'defi-blue-chip',
-  signTransactions, // same callback as open — signs the prepared transactions locally
+  signTransactions: signWithKeypair(keypair), // same helper as open — signs each leg locally
 });
 result.status;       // 'COMPLETED' | 'PARTIALLY_COMPLETED' | 'FAILED'
 result.transactions; // per-leg { nodeId, ok, signature?, error? }
 ```
 
-See [Open a Position](/sdk/open-position#one-call-flow-you-hold-the-keypair) for a full
-`signTransactions` implementation with `@solana/web3.js`.
+See [Open a Position](/sdk/open-position#one-call-flow-you-hold-the-keypair) for the full
+`signWithKeypair` setup (and how to supply your own `signTransactions` callback instead).
 
 ## Split flow (browser wallet signs)
 
@@ -91,3 +93,8 @@ semantics, the common-error table, and the security model are identical to openi
 - A `PARTIALLY_COMPLETED` close means some legs sold and some didn't; the remaining
   holdings are still in the wallet and a fresh `close.prepare` will target exactly what's
   left.
+
+## Rebalancing
+
+To move a position to the basket's latest version instead of closing it, see
+[Rebalance a Position](/sdk/rebalance-position).
