@@ -15,8 +15,8 @@ This page maps the common partner setups onto the SDK flows in
 tell which path is yours before you write any code.
 
 <Info>
-  Whatever the model, the wallet needs the basket's **input token (USDC)** to open, plus a
-  little **SOL for gas** — the wallet pays its own fees. Cesto does not sponsor gas or hold
+  Whatever the model, the wallet needs the basket's **input token (USDC)** to open. Cesto
+  **sponsors the network gas and ATA rent** — the wallet needs **no SOL** — and never holds
   the user's key.
 </Info>
 
@@ -63,9 +63,9 @@ infrastructure yourself.
     You store that Solana address against your user record.
   </Step>
   <Step title="Fund the wallet">
-    Get **USDC** (and a little **SOL** for gas) onto the address — via deposit, on-ramp, or
-    a bridge (see [Cross-chain](#cross-chain-users-evm-to-solana) if funds start on an EVM
-    chain).
+    Get **USDC** onto the address — via deposit, on-ramp, or a bridge (see
+    [Cross-chain](#cross-chain-users-evm-to-solana) if funds start on an EVM chain). Cesto
+    sponsors gas, so the wallet needs no SOL.
   </Step>
   <Step title="Open / close by user">
     Call [`open`](/sdk/open-position) / [`close`](/sdk/close-position) with the user's
@@ -96,7 +96,7 @@ delegate signing to Privy inside the `signTransactions` callback:
 ```ts
 const result = await cesto.open.execute({
   user: userSolanaAddress,
-  slug: 'defi-blue-chip',
+  slug: 'stable-genius',
   amount: 100_000_000n, // 100 USDC @ 6 decimals
   // Receive Cesto's prepared txs, sign each with your Privy wallet, return them base64.
   signTransactions: async (transactions) =>
@@ -159,7 +159,7 @@ The pattern:
   </Step>
   <Step title="Bridge USDC into the SVM wallet">
     You (or the user) bridge **USDC from the EVM chain to the Cesto SVM wallet address** with
-    a bridge of your choice. Also make sure a little **SOL** reaches the wallet for gas.
+    a bridge of your choice. No SOL is needed — Cesto sponsors gas.
   </Step>
   <Step title="Open / close on Solana">
     Once USDC is on the Solana wallet, it's an ordinary SDK position — call

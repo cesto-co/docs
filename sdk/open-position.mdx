@@ -18,10 +18,15 @@ The flow is **prepare → sign → submit → poll**:
 ```
 
 <Warning>
-  Opening requires a **write-scoped** API key (read-only keys get a `403` on write routes),
-  and the user's wallet **pays its own gas** — it must hold some SOL. Cesto does not
-  sponsor gas for SDK positions.
+  Opening requires a **write-scoped** API key (read-only keys get a `403` on write routes).
+  Cesto **sponsors the network gas and account (ATA) rent**, so the user's wallet needs
+  **no SOL** — only the basket's **input token (USDC)** to invest (plus the platform fee).
 </Warning>
+
+<Note>
+  Gas sponsorship is on by default. If a deployment runs without a configured sponsor, the
+  wallet falls back to paying its own gas and must then hold a little SOL.
+</Note>
 
 There is no separate ownership challenge: **the signatures are the ownership proof**.
 Prepare only needs the wallet *address*.
@@ -46,12 +51,12 @@ import { Keypair } from '@solana/web3.js';
 
 const cesto = new Cesto({ apiKey: process.env.CESTO_API_KEY }); // write-scoped key
 
-const keypair = Keypair.fromSecretKey(secret); // a wallet YOU control, funded with SOL
+const keypair = Keypair.fromSecretKey(secret); // a wallet YOU control, funded with USDC
 const wallet = keypair.publicKey.toBase58();
 
 const result = await cesto.open.execute({
   user: wallet,
-  slug: 'defi-blue-chip',
+  slug: 'stable-genius',
   amount: 100_000_000n, // input base units (e.g. 100 USDC @ 6 decimals)
   signTransactions: signWithKeypair(keypair), // signs each prepared leg locally
 });
@@ -78,7 +83,7 @@ wallet in the **browser**. Use the lower-level methods and hop between the two:
     ```ts
     const prepared = await cesto.open.prepare({
       user: userWalletAddress,
-      slug: 'defi-blue-chip',
+      slug: 'stable-genius',
       amount: 100_000_000n,
     });
     // { executionId, transactions: [{ nodeId, transaction }], expiresAt }
@@ -186,7 +191,7 @@ are self-custody and do **not** appear in `positions.getPositions`.
 | Submitted tx bytes altered vs prepared | `400` — only signatures may be added |
 | Signed by a different wallet than prepared for | `400` — the wallet's signature must verify |
 | Another execution in flight for this wallet + product | conflict at prepare/submit |
-| Wallet has no SOL for gas / insufficient funds | leg fails at landing → `FAILED` / `PARTIALLY_COMPLETED` |
+| Wallet has insufficient input-token (USDC) balance | leg fails at landing → `FAILED` / `PARTIALLY_COMPLETED` |
 | `submit` timed out client-side | do **not** re-send; poll `getExecution` |
 
 ## Security model
@@ -206,7 +211,8 @@ are self-custody and do **not** appear in `positions.getPositions`.
 
 - **Swap-only baskets** (one or more tokens). No prediction markets, lending, or perps.
 - **One in-flight execution** per wallet + product.
-- **User pays gas** — the wallet must hold SOL.
+- **Gas sponsored** — Cesto pays network gas + ATA rent; the wallet needs only the input
+  token (USDC), no SOL (unless the deployment runs without a sponsor).
 
 ## Closing & rebalancing
 

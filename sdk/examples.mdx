@@ -29,13 +29,13 @@ Requires **Node.js 20.6+**.
 | Live position in one basket | `pnpm position` | [Positions](/sdk/positions) |
 | Open a position (one call) | `pnpm open --yes` | [Open a Position](/sdk/open-position) |
 | Close a position (one call) | `pnpm close --yes` | [Close a Position](/sdk/close-position) |
-| Rebalance a position (full loop) | `pnpm rebalance --yes` | [Rebalance a Position](/sdk/rebalance-position) |
+| Rebalance a position | `pnpm rebalance --yes` | [Rebalance a Position](/sdk/rebalance-position) |
 | Explicit prepare → sign → submit → poll | `pnpm split-flow --yes` | [Open a Position](/sdk/open-position#split-flow-browser-wallet-signs) |
 | Typed errors, overrides, cancellation | `pnpm errors` | [Errors & Retries](/sdk/errors) |
 
 <Warning>
-  The open / close / rebalance / split-flow examples execute **real swaps on Solana mainnet** from the
-  wallet you configure, and that wallet pays its own gas. They refuse to run without an
-  explicit `--yes` flag — use a dedicated test wallet with small amounts, and a
-  **write-scoped** API key (see [Authentication](/sdk/authentication)).
+  The open / close / rebalance / split-flow examples execute **real swaps on Solana mainnet**,
+  spending real USDC from the wallet you configure (Cesto sponsors the gas). They refuse to
+  run without an explicit `--yes` flag — use a dedicated test wallet with small amounts, and
+  a **write-scoped** API key (see [Authentication](/sdk/authentication)).
 </Warning>
