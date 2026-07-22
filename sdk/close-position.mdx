@@ -14,24 +14,26 @@ Closing follows the same client-signed **prepare → sign → submit → poll** 
 - The prepare call is `close.prepare` / the one-call helper is `close.execute`.
 
 <Warning>
-  Like opening, closing requires a **write-scoped** API key and the user's wallet pays its
-  own gas — it must hold some SOL.
+  Like opening, closing requires a **write-scoped** API key. Cesto **sponsors the gas and
+  ATA rent**, so the wallet needs **no SOL**.
 </Warning>
 
 ## One-call flow (you hold the keypair)
 
 ```ts
+import { signWithKeypair } from '@cesto/sdk';
+
 const result = await cesto.close.execute({
   user: wallet,
-  slug: 'defi-blue-chip',
-  signTransactions, // same callback as open — signs the prepared transactions locally
+  slug: 'stable-genius',
+  signTransactions: signWithKeypair(keypair), // same helper as open — signs each leg locally
 });
 result.status;       // 'COMPLETED' | 'PARTIALLY_COMPLETED' | 'FAILED'
 result.transactions; // per-leg { nodeId, ok, signature?, error? }
 ```
 
-See [Open a Position](/sdk/open-position#one-call-flow-you-hold-the-keypair) for a full
-`signTransactions` implementation with `@solana/web3.js`.
+See [Open a Position](/sdk/open-position#one-call-flow-you-hold-the-keypair) for the full
+`signWithKeypair` setup (and how to supply your own `signTransactions` callback instead).
 
 ## Split flow (browser wallet signs)
 
@@ -40,7 +42,7 @@ See [Open a Position](/sdk/open-position#one-call-flow-you-hold-the-keypair) for
     ```ts
     const prepared = await cesto.close.prepare({
       user: userWalletAddress,
-      slug: 'defi-blue-chip',
+      slug: 'stable-genius',
     });
     // { executionId, transactions: [{ nodeId, transaction }], expiresAt }
     ```
@@ -91,3 +93,8 @@ semantics, the common-error table, and the security model are identical to openi
 - A `PARTIALLY_COMPLETED` close means some legs sold and some didn't; the remaining
   holdings are still in the wallet and a fresh `close.prepare` will target exactly what's
   left.
+
+## Rebalancing
+
+To move a position to the basket's latest version instead of closing it, see
+[Rebalance a Position](/sdk/rebalance-position).

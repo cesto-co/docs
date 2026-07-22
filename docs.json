@@ -68,12 +68,14 @@
             "group": "Cesto SDK",
             "pages": [
               "sdk/overview",
+              "sdk/integration-models",
               "sdk/authentication",
               "sdk/configuration",
               "sdk/products",
               "sdk/positions",
               "sdk/open-position",
               "sdk/close-position",
+              "sdk/rebalance-position",
               "sdk/errors",
               "sdk/examples"
             ]

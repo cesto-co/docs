@@ -18,46 +18,58 @@ The flow is **prepare → sign → submit → poll**:
 ```
 
 <Warning>
-  Opening requires a **write-scoped** API key (read-only keys get a `403` on write routes),
-  and the user's wallet **pays its own gas** — it must hold some SOL. Cesto does not
-  sponsor gas for SDK positions.
+  Opening requires a **write-scoped** API key (read-only keys get a `403` on write routes).
+  Cesto **sponsors the network gas and account (ATA) rent**, so the user's wallet needs
+  **no SOL** — only the basket's **input token (USDC)** to invest (plus the platform fee).
 </Warning>
+
+<Note>
+  Gas sponsorship is on by default. If a deployment runs without a configured sponsor, the
+  wallet falls back to paying its own gas and must then hold a little SOL.
+</Note>
 
 There is no separate ownership challenge: **the signatures are the ownership proof**.
 Prepare only needs the wallet *address*.
+
+<Note>
+  Which flow you use depends on your wallet setup — see
+  [Integration Models](/sdk/integration-models). Backends that can sign (your own Privy or a
+  keypair you custody) use the one-call flow; browser EOAs like Phantom / Solflare use the
+  split flow.
+</Note>
 
 ## One-call flow (you hold the keypair)
 
 When your backend controls the signing keypair — bots, agents, services you custody —
 `open.execute` runs the whole flow in one call. You supply a `signTransactions` callback,
-so the SDK never touches the private key:
+so the SDK never touches the private key. The SDK ships a `signWithKeypair` helper that
+builds that callback from your keypair:
 
 ```ts
-import { Cesto } from '@cesto/sdk';
-import { Keypair, VersionedTransaction } from '@solana/web3.js';
+import { Cesto, signWithKeypair } from '@cesto/sdk';
+import { Keypair } from '@solana/web3.js';
 
 const cesto = new Cesto({ apiKey: process.env.CESTO_API_KEY }); // write-scoped key
 
-const keypair = Keypair.fromSecretKey(secret); // a wallet YOU control, funded with SOL
+const keypair = Keypair.fromSecretKey(secret); // a wallet YOU control, funded with USDC
 const wallet = keypair.publicKey.toBase58();
-
-// Receives every prepared transaction; returns them signed, base64-encoded.
-const signTransactions = async (transactions) =>
-  transactions.map(({ nodeId, transaction }) => {
-    const vtx = VersionedTransaction.deserialize(Buffer.from(transaction, 'base64'));
-    vtx.sign([keypair]);
-    return { nodeId, signedTransaction: Buffer.from(vtx.serialize()).toString('base64') };
-  });
 
 const result = await cesto.open.execute({
   user: wallet,
-  slug: 'defi-blue-chip',
+  slug: 'stable-genius',
   amount: 100_000_000n, // input base units (e.g. 100 USDC @ 6 decimals)
-  signTransactions,
+  signTransactions: signWithKeypair(keypair), // signs each prepared leg locally
 });
 result.status;       // 'COMPLETED' | 'PARTIALLY_COMPLETED' | 'FAILED'
 result.transactions; // per-leg { nodeId, ok, signature?, error? }
 ```
+
+<Note>
+  `signWithKeypair` needs `@solana/web3.js` (an optional peer dependency — install it
+  alongside `@cesto/sdk`). Prefer to sign yourself? Pass any `async (transactions) => …`
+  callback that returns one `{ nodeId, signedTransaction }` per prepared leg — only
+  signatures may be added, the message bytes must stay byte-identical.
+</Note>
 
 ## Split flow (browser wallet signs)
 
@@ -71,7 +83,7 @@ wallet in the **browser**. Use the lower-level methods and hop between the two:
     ```ts
     const prepared = await cesto.open.prepare({
       user: userWalletAddress,
-      slug: 'defi-blue-chip',
+      slug: 'stable-genius',
       amount: 100_000_000n,
     });
     // { executionId, transactions: [{ nodeId, transaction }], expiresAt }
@@ -179,7 +191,7 @@ are self-custody and do **not** appear in `positions.getPositions`.
 | Submitted tx bytes altered vs prepared | `400` — only signatures may be added |
 | Signed by a different wallet than prepared for | `400` — the wallet's signature must verify |
 | Another execution in flight for this wallet + product | conflict at prepare/submit |
-| Wallet has no SOL for gas / insufficient funds | leg fails at landing → `FAILED` / `PARTIALLY_COMPLETED` |
+| Wallet has insufficient input-token (USDC) balance | leg fails at landing → `FAILED` / `PARTIALLY_COMPLETED` |
 | `submit` timed out client-side | do **not** re-send; poll `getExecution` |
 
 ## Security model
@@ -197,11 +209,12 @@ are self-custody and do **not** appear in `positions.getPositions`.
 
 ## Constraints
 
-- **Open and close only** — no rebalance via the SDK.
 - **Swap-only baskets** (one or more tokens). No prediction markets, lending, or perps.
 - **One in-flight execution** per wallet + product.
-- **User pays gas** — the wallet must hold SOL.
+- **Gas sponsored** — Cesto pays network gas + ATA rent; the wallet needs only the input
+  token (USDC), no SOL (unless the deployment runs without a sponsor).
 
-## Closing
+## Closing & rebalancing
 
-Closing is symmetric — see [Close a Position](/sdk/close-position).
+Closing is symmetric — see [Close a Position](/sdk/close-position). To migrate a position to
+the basket's latest version, see [Rebalance a Position](/sdk/rebalance-position).
